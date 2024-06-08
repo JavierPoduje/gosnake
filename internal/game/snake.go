@@ -4,8 +4,8 @@ import (
 	"errors"
 )
 
-func dirs() [][]Direction {
-	return [][]Direction{
+func dirs() [][]int {
+	return [][]int{
 		{0, -1}, // Up
 		{1, 0},  // Right
 		{0, 1},  // Down
@@ -33,6 +33,15 @@ func (s *Snake) Add() {
 	})
 }
 
+func (s *Snake) NextHead(dir Direction) Coord {
+	dirCoord := dirs()[dir]
+	head := s.Body[0]
+	return Coord{
+		X: head.X + dirCoord[0],
+		Y: head.Y + dirCoord[1],
+	}
+}
+
 func (s *Snake) Move(dir Direction) error {
 	if dir < 0 && dir >= 4 {
 		return errors.New("Invalid direction")
@@ -50,8 +59,8 @@ func (s *Snake) Move(dir Direction) error {
 	for i, coord := range s.Body {
 		if i == 0 {
 			head = Coord{
-				coord.X + int(dirCoord[0]),
-				coord.Y + int(dirCoord[1]),
+				coord.X + dirCoord[0],
+				coord.Y + dirCoord[1],
 			}
 			newBody[i] = head
 		} else {

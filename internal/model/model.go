@@ -3,7 +3,6 @@ package model
 import (
 	"gosnake/internal/game"
 	"gosnake/internal/styles"
-	"log"
 	"strings"
 	"time"
 
@@ -12,8 +11,8 @@ import (
 )
 
 const (
-	TerminalWidth  = 97
-	TerminalHeight = 34
+	TerminalWidth  = 160
+	TerminalHeight = 32
 	CanvasWidth    = 10
 	CanvasHeight   = 10
 )
@@ -56,16 +55,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "up", "k":
-			m.UpdateSnake(game.Up)
+			m.game.UpdateSnake(game.Up)
 			return m, nil
 		case "right", "l":
-			m.UpdateSnake(game.Right)
+			m.game.UpdateSnake(game.Right)
 			return m, nil
 		case "down", "j":
-			m.UpdateSnake(game.Down)
+			m.game.UpdateSnake(game.Down)
 			return m, nil
 		case "left", "h":
-			m.UpdateSnake(game.Left)
+			m.game.UpdateSnake(game.Left)
 			return m, nil
 		}
 
@@ -85,14 +84,6 @@ func (m Model) View() string {
 		styles.Button(m.msg),
 		canvas,
 	)
-}
-
-func (m Model) UpdateSnake(dir game.Direction) {
-	m.game.NextMove = dir
-	err := m.game.Snake.Move(m.game.NextMove)
-	if err != nil {
-		log.Fatalf("Invalid m.game.NextMove: %v", err)
-	}
 }
 
 func (m Model) BuildNextCanvasFrame() string {
