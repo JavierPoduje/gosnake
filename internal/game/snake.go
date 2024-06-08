@@ -1,4 +1,4 @@
-package snake
+package game
 
 import (
 	"errors"
@@ -80,7 +80,7 @@ func (s *Snake) Move(dir int) error {
 
 func (s *Snake) Contains(c Coord) bool {
 	for _, coord := range s.Body {
-		if coord.X == c.X && coord.Y == c.Y {
+		if coord == c {
 			return true
 		}
 	}

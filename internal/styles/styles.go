@@ -1,4 +1,4 @@
-package ui
+package styles
 
 import (
 	"github.com/charmbracelet/lipgloss"
@@ -9,6 +9,7 @@ func Canvas(width, height int) lipgloss.Style {
 		Width(width).
 		Height(height).
 		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("#fff")).
 		BorderTop(true).
 		BorderLeft(true).
 		BorderRight(true).
@@ -17,8 +18,8 @@ func Canvas(width, height int) lipgloss.Style {
 
 func NeutralChar() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Width(0).
-		Height(0).
+		Width(1).
+		Height(1).
 		Foreground(lipgloss.Color("#383838"))
 }
 

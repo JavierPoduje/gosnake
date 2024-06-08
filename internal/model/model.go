@@ -1,8 +1,8 @@
 package model
 
 import (
-	"gosnake/internal/snake"
-	"gosnake/internal/ui"
+	"gosnake/internal/game"
+	"gosnake/internal/styles"
 	"strings"
 	"time"
 
@@ -11,21 +11,23 @@ import (
 )
 
 const (
-	TerminalWidth  = 96
-	TerminalHeight = 33
+	TerminalWidth  = 97
+	TerminalHeight = 34
 	CanvasWidth    = 10
 	CanvasHeight   = 10
 )
 
 const (
-	SnakeChar = "S"
-	AppleChar = "A"
+	SnakeChar   = "S"
+	AppleChar   = "A"
+	NeutralChar = "."
 )
 
 type TickMsg time.Time
 
 type Model struct {
-	msg string
+	msg  string
+	game *game.Game
 }
 
 func (m Model) tick() tea.Cmd {
@@ -36,7 +38,8 @@ func (m Model) tick() tea.Cmd {
 
 func NewModel() Model {
 	return Model{
-		msg: "Initializing...",
+		msg:  "Initializing...",
+		game: game.NewGame(CanvasWidth, CanvasHeight),
 	}
 }
 
@@ -61,29 +64,36 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	strCanvas := strings.Builder{}
-	s := snake.NewSnake()
-	appleCoord := snake.Coord{X: 2, Y: 2}
+	canvas := m.BuildCanvas()
+	return canvas
+}
 
-	for y := 0; y < CanvasWidth; y++ {
-		for x := 0; x < CanvasHeight; x++ {
-			if s.Contains(snake.Coord{X: x, Y: y}) {
+func (m Model) BuildCanvas() string {
+	strCanvas := strings.Builder{}
+
+	width := m.game.Canvas.Width
+	height := m.game.Canvas.Height
+
+	snake := m.game.Snake
+	apple := m.game.Apple
+
+	for Y := 0; Y < width; Y++ {
+		for X := 0; X < height; X++ {
+			if snake.Contains(game.Coord{X: X, Y: Y}) {
 				strCanvas.WriteString(SnakeChar)
-			} else if appleCoord.X == x && appleCoord.Y == y {
+			} else if apple.X == X && apple.Y == Y {
 				strCanvas.WriteString(AppleChar)
 			} else {
-				strCanvas.WriteString(ui.NeutralChar().Render("."))
+				strCanvas.WriteString(styles.NeutralChar().Render(NeutralChar))
 			}
 		}
 	}
 
-	filledCanvas := lipgloss.Place(
+	canvas := lipgloss.Place(
 		TerminalWidth, TerminalHeight,
 		lipgloss.Center, lipgloss.Center,
-		ui.Canvas(CanvasWidth, CanvasHeight).Render(strCanvas.String()),
-		lipgloss.WithWhitespaceChars("\uef0f"),
-		lipgloss.WithWhitespaceForeground(lipgloss.AdaptiveColor{Light: "#D9DCCF", Dark: "#383838"}),
+		styles.Canvas(CanvasWidth, CanvasHeight).Render(strCanvas.String()),
 	)
 
-	return filledCanvas
+	return canvas
 }
