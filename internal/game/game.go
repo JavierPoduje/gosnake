@@ -4,6 +4,8 @@ type Game struct {
 	Snake  *Snake
 	Canvas *Canvas
 	Apple  *Apple
+
+	NextMove int
 }
 
 func NewGame(width, height int) *Game {

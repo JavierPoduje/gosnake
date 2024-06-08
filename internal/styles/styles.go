@@ -23,31 +23,31 @@ func NeutralChar() lipgloss.Style {
 		Foreground(lipgloss.Color("#383838"))
 }
 
-//func Text(s string) string {
-//    textStyle := lipgloss.NewStyle().
-//        Bold(true).
-//        Foreground(lipgloss.Color("#FAFAFA")).
-//        Background(lipgloss.Color("#7D56F4")).
-//        Padding(2, 4, 2, 4).
-//        MarginLeft(10).
-//        Width(24)
+func Text(s string) string {
+	textStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#FAFAFA")).
+		Background(lipgloss.Color("#7D56F4")).
+		Padding(2, 4, 2, 4).
+		MarginLeft(10).
+		Width(24)
 
-//    return textStyle.Render(s)
-//}
+	return textStyle.Render(s)
+}
 
-//func Button(label string) string {
-//    textStyle := lipgloss.NewStyle().
-//        Bold(true).
-//        Foreground(lipgloss.Color("#FAFAFA")).
-//        BorderStyle(lipgloss.RoundedBorder()).
-//        BorderForeground(lipgloss.Color("#7D56F4")).
-//        Align(lipgloss.Center).
-//        PaddingTop(1).
-//        Width(22).
-//        Height(3)
+func Button(label string) string {
+	textStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#FAFAFA")).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("#7D56F4")).
+		Align(lipgloss.Center).
+		PaddingTop(1).
+		Width(22).
+		Height(3)
 
-//    return textStyle.Render(label)
-//}
+	return textStyle.Render(label)
+}
 
 //func Container() lipgloss.Style {
 //    return lipgloss.NewStyle().

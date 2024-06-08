@@ -4,24 +4,12 @@ import (
 	"errors"
 )
 
-const (
-	defaultX = 1
-	defaultY = 1
-)
-
-const (
-	Up = iota
-	Right
-	Down
-	Left
-)
-
 func dirs() [][]int {
 	return [][]int{
-		{-1, 0}, // Up
-		{0, 1},  // Right
-		{1, 0},  // Down
-		{0, -1}, // Down
+		{0, -1}, // Up
+		{1, 0},  // Right
+		{0, 1},  // Down
+		{-1, 0}, // Left
 	}
 }
 
@@ -32,8 +20,8 @@ type Snake struct {
 
 func NewSnake() *Snake {
 	return &Snake{
-		Body: []Coord{{defaultX, defaultY}},
-		Dir:  Right,
+		Body: []Coord{{defaultSnakeX, defaultSnakeY}},
+		Dir:  defaultSnakeDir,
 	}
 }
 
@@ -51,7 +39,7 @@ func (s *Snake) Move(dir int) error {
 	}
 
 	if s.isOppositeDir(dir) {
-		return errors.New("Can't move in opposite direction")
+		return nil
 	}
 
 	var head Coord

@@ -7,7 +7,7 @@ type Apple struct {
 
 func NewApple() *Apple {
 	return &Apple{
-		X: 2,
-		Y: 2,
+		X: defaultAppleX,
+		Y: defaultAppleY,
 	}
 }
