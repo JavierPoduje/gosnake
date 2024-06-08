@@ -56,20 +56,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "up", "k":
-			m.game.NextMove = game.Up
-			m.UpdateSnake()
+			m.UpdateSnake(game.Up)
 			return m, nil
 		case "right", "l":
-			m.game.NextMove = game.Right
-			m.UpdateSnake()
+			m.UpdateSnake(game.Right)
 			return m, nil
 		case "down", "j":
-			m.game.NextMove = game.Down
-			m.UpdateSnake()
+			m.UpdateSnake(game.Down)
 			return m, nil
 		case "left", "h":
-			m.game.NextMove = game.Left
-			m.UpdateSnake()
+			m.UpdateSnake(game.Left)
 			return m, nil
 		}
 
@@ -82,7 +78,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	canvas := m.RenderNextCanvasFrame()
+	canvas := m.BuildNextCanvasFrame()
+
 	return lipgloss.JoinVertical(
 		lipgloss.Center,
 		styles.Button(m.msg),
@@ -90,14 +87,15 @@ func (m Model) View() string {
 	)
 }
 
-func (m Model) UpdateSnake() {
+func (m Model) UpdateSnake(dir game.Direction) {
+	m.game.NextMove = dir
 	err := m.game.Snake.Move(m.game.NextMove)
 	if err != nil {
 		log.Fatalf("Invalid m.game.NextMove: %v", err)
 	}
 }
 
-func (m Model) RenderNextCanvasFrame() string {
+func (m Model) BuildNextCanvasFrame() string {
 	strCanvas := strings.Builder{}
 
 	width := m.game.Canvas.Width

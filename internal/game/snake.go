@@ -4,8 +4,8 @@ import (
 	"errors"
 )
 
-func dirs() [][]int {
-	return [][]int{
+func dirs() [][]Direction {
+	return [][]Direction{
 		{0, -1}, // Up
 		{1, 0},  // Right
 		{0, 1},  // Down
@@ -15,7 +15,7 @@ func dirs() [][]int {
 
 type Snake struct {
 	Body []Coord // head is at index 0
-	Dir  int
+	Dir  Direction
 }
 
 func NewSnake() *Snake {
@@ -33,7 +33,7 @@ func (s *Snake) Add() {
 	})
 }
 
-func (s *Snake) Move(dir int) error {
+func (s *Snake) Move(dir Direction) error {
 	if dir < 0 && dir >= 4 {
 		return errors.New("Invalid direction")
 	}
@@ -50,8 +50,8 @@ func (s *Snake) Move(dir int) error {
 	for i, coord := range s.Body {
 		if i == 0 {
 			head = Coord{
-				coord.X + dirCoord[0],
-				coord.Y + dirCoord[1],
+				coord.X + int(dirCoord[0]),
+				coord.Y + int(dirCoord[1]),
 			}
 			newBody[i] = head
 		} else {
@@ -75,7 +75,7 @@ func (s *Snake) Contains(c Coord) bool {
 	return false
 }
 
-func (s *Snake) isOppositeDir(dir int) bool {
+func (s *Snake) isOppositeDir(dir Direction) bool {
 	return (s.Dir == Up && dir == Down) ||
 		(s.Dir == Down && dir == Up) ||
 		(s.Dir == Left && dir == Right) ||

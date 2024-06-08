@@ -5,7 +5,7 @@ type Game struct {
 	Canvas *Canvas
 	Apple  *Apple
 
-	NextMove int
+	NextMove Direction
 }
 
 func NewGame(width, height int) *Game {
