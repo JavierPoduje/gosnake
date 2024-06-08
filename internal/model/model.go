@@ -1,12 +1,25 @@
 package model
 
 import (
+	"gosnake/internal/snake"
 	"gosnake/internal/ui"
 	"strings"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+)
+
+const (
+	TerminalWidth  = 96
+	TerminalHeight = 33
+	CanvasWidth    = 10
+	CanvasHeight   = 10
+)
+
+const (
+	SnakeChar = "S"
+	AppleChar = "A"
 )
 
 type TickMsg time.Time
@@ -48,30 +61,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	doc := strings.Builder{}
+	strCanvas := strings.Builder{}
+	s := snake.NewSnake()
+	appleCoord := snake.Coord{X: 2, Y: 2}
 
-	//buttons := lipgloss.JoinHorizontal(lipgloss.Top,
-	//    ui.Text(m.msg),
-	//    ui.Button("Another"),
-	//)
-
-	//doc.WriteString(buttons)
-	for i := 0; i < 100; i++ {
-		if i == 13 {
-			doc.WriteString("\uee98")
-		} else {
-			doc.WriteString(" ")
+	for y := 0; y < CanvasWidth; y++ {
+		for x := 0; x < CanvasHeight; x++ {
+			if s.Contains(snake.Coord{X: x, Y: y}) {
+				strCanvas.WriteString(SnakeChar)
+			} else if appleCoord.X == x && appleCoord.Y == y {
+				strCanvas.WriteString(AppleChar)
+			} else {
+				strCanvas.WriteString(ui.NeutralChar().Render("."))
+			}
 		}
 	}
-	//doc.WriteString(ui.Grid())
-
-	//return doc.String()
 
 	filledCanvas := lipgloss.Place(
-		80, 40,
+		TerminalWidth, TerminalHeight,
 		lipgloss.Center, lipgloss.Center,
-		ui.Canvas().Render(doc.String()),
-		lipgloss.WithWhitespaceChars("[]"),
+		ui.Canvas(CanvasWidth, CanvasHeight).Render(strCanvas.String()),
+		lipgloss.WithWhitespaceChars("\uef0f"),
 		lipgloss.WithWhitespaceForeground(lipgloss.AdaptiveColor{Light: "#D9DCCF", Dark: "#383838"}),
 	)
 
