@@ -13,8 +13,8 @@ import (
 const (
 	TerminalWidth  = 160
 	TerminalHeight = 32
-	CanvasWidth    = 10
-	CanvasHeight   = 10
+	CanvasWidth    = 20
+	CanvasHeight   = 20
 )
 
 const (
@@ -31,7 +31,7 @@ type Model struct {
 }
 
 func (m Model) tick() tea.Cmd {
-	return tea.Tick(time.Second/3, func(t time.Time) tea.Msg {
+	return tea.Tick(time.Second/5, func(t time.Time) tea.Msg {
 		return TickMsg(t)
 	})
 }
@@ -55,21 +55,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "up", "k":
-			m.game.UpdateSnake(game.Up)
+			m.game.Tick(game.Up)
 			return m, nil
 		case "right", "l":
-			m.game.UpdateSnake(game.Right)
+			m.game.Tick(game.Right)
 			return m, nil
 		case "down", "j":
-			m.game.UpdateSnake(game.Down)
+			m.game.Tick(game.Down)
 			return m, nil
 		case "left", "h":
-			m.game.UpdateSnake(game.Left)
+			m.game.Tick(game.Left)
 			return m, nil
 		}
 
 	case TickMsg:
-		m.msg = "timer: " + time.Now().Format("15:04:05")
+		//m.msg = "timer: " + time.Now().Format("15:04:05")
+		//m.msg = m.game.Snake.Dir.String()
+		//m.msg = m.game.Snake.Body[0].String()
+		m.msg = m.game.Apple.String()
 		return m, m.tick()
 	}
 
