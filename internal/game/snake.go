@@ -56,7 +56,12 @@ func (s *Snake) Move(dir Direction) error {
 	dirCoord := dirs()[dir]
 
 	newBody := make([]Coord, len(s.Body))
+	skipLastCoord := false
 	for i, coord := range s.Body {
+		if skipLastCoord && i == len(s.Body)-1{
+			break
+		}
+
 		if i == 0 {
 			head = Coord{
 				coord.X + dirCoord[0],
@@ -64,6 +69,15 @@ func (s *Snake) Move(dir Direction) error {
 			}
 			newBody[i] = head
 		} else {
+			secondToLastIdx := len(s.Body) - 2
+			lastIdx := len(s.Body) - 1
+
+			isSecondToLast := i == secondToLastIdx
+
+			if isSecondToLast && s.Body[lastIdx] == s.Body[secondToLastIdx] {
+				skipLastCoord = true
+			}
+
 			prev = newBody[i-1]
 			newBody[i] = prev
 		}
