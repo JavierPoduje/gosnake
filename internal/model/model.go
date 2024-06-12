@@ -62,16 +62,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "up", "k":
-			m.nextSnakeMove = game.Up
+			if !m.game.Snake.IsOppositeDir(game.Up) {
+				m.nextSnakeMove = game.Up
+			}
 			return m, nil
 		case "right", "l":
-			m.nextSnakeMove = game.Right
+			if !m.game.Snake.IsOppositeDir(game.Right) {
+				m.nextSnakeMove = game.Right
+			}
 			return m, nil
 		case "down", "j":
-			m.nextSnakeMove = game.Down
+			if !m.game.Snake.IsOppositeDir(game.Down) {
+				m.nextSnakeMove = game.Down
+			}
 			return m, nil
 		case "left", "h":
-			m.nextSnakeMove = game.Left
+			if !m.game.Snake.IsOppositeDir(game.Left) {
+				m.nextSnakeMove = game.Left
+			}
 			return m, nil
 		}
 

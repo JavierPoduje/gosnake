@@ -50,7 +50,7 @@ func (s *Snake) Move(dir Direction) error {
 		return errors.New("Invalid direction")
 	}
 
-	if s.isOppositeDir(dir) {
+	if s.IsOppositeDir(dir) {
 		return nil
 	}
 
@@ -92,7 +92,7 @@ func (s *Snake) Contains(c Coord) bool {
 	return false
 }
 
-func (s *Snake) isOppositeDir(dir Direction) bool {
+func (s *Snake) IsOppositeDir(dir Direction) bool {
 	return (s.Dir == Up && dir == Down) ||
 		(s.Dir == Down && dir == Up) ||
 		(s.Dir == Left && dir == Right) ||
