@@ -2,6 +2,7 @@ package game
 
 import (
 	"errors"
+	"strings"
 )
 
 func dirs() [][]int {
@@ -21,8 +22,8 @@ type Snake struct {
 
 func NewSnake() *Snake {
 	return &Snake{
-		Body:              []Coord{{defaultSnakeX, defaultSnakeY}},
-		Dir:               defaultSnakeDir,
+		Body: []Coord{{defaultSnakeX, defaultSnakeY}},
+		Dir:  defaultSnakeDir,
 	}
 }
 
@@ -91,4 +92,12 @@ func (s *Snake) isOppositeDir(dir Direction) bool {
 		(s.Dir == Down && dir == Up) ||
 		(s.Dir == Left && dir == Right) ||
 		(s.Dir == Right && dir == Left)
+}
+
+func (s *Snake) BodyAsString() string {
+	body := strings.Builder{}
+	for _, coord := range s.Body {
+		body.WriteString(coord.String())
+	}
+	return body.String()
 }

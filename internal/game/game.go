@@ -7,24 +7,33 @@ import (
 	"strings"
 )
 
+const (
+	Running = iota
+	GameOver
+)
+
 type Game struct {
 	Snake  *Snake
 	Canvas *Canvas
 	Apple  *Coord
 
 	NextMove Direction
+	State    int
 }
 
 func NewGame(width, height int) *Game {
 	return &Game{
-		Snake:  NewSnake(),
-		Canvas: NewCanvas(width, height),
-		Apple:  &Coord{X: defaultAppleX, Y: defaultAppleY},
+		Snake:    NewSnake(),
+		Canvas:   NewCanvas(width, height),
+		Apple:    &Coord{X: defaultAppleX, Y: defaultAppleY},
+		NextMove: Up,
+		State:    Running,
 	}
 }
 
 func (g *Game) Tick(dir Direction, logger *logger.Logger) {
 	if !g.canSnakeMove(dir) {
+		g.State = GameOver
 		return
 	}
 
@@ -66,4 +75,17 @@ func (g Game) getRandApple() *Coord {
 	Y := rand.IntN(height)
 
 	return &Coord{X: X, Y: Y}
+}
+
+func (g Game) StateAsString() string {
+	switch g.State {
+	case Running:
+		return "Running"
+	case GameOver:
+		return "Game Over"
+	}
+
+	log.Fatalf("Invalid game state: %v", g.State)
+
+	return ""
 }

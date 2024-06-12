@@ -75,7 +75,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		//m.msg = "timer: " + time.Now().Format("15:04:05")
 		//m.msg = m.game.Snake.Dir.String()
 		//m.msg = m.game.Snake.Body[0].String()
-		m.msg = m.game.Apple.String()
+		m.msg = m.game.StateAsString()
+
+		if m.game.State == game.GameOver {
+			return m, nil
+		}
+
 		return m, m.tick()
 	}
 
