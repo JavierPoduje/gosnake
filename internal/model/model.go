@@ -26,23 +26,27 @@ const (
 
 type TickMsg time.Time
 
+const defaultSnakeDir = game.Right
+
 type Model struct {
-	msg    string
-	game   *game.Game
-	logger *logger.Logger
+	msg           string
+	game          *game.Game
+	logger        *logger.Logger
+	nextSnakeMove game.Direction
 }
 
 func (m Model) tick() tea.Cmd {
-	return tea.Tick(time.Second/5, func(t time.Time) tea.Msg {
+	return tea.Tick(time.Second/3, func(t time.Time) tea.Msg {
 		return TickMsg(t)
 	})
 }
 
 func NewModel() Model {
 	return Model{
-		msg:    "Initializing...",
-		game:   game.NewGame(CanvasWidth, CanvasHeight),
-		logger: logger.NewLogger("debug.log"),
+		msg:           "Initializing...",
+		game:          game.NewGame(CanvasWidth, CanvasHeight),
+		logger:        logger.NewLogger("debug.log"),
+		nextSnakeMove: defaultSnakeDir,
 	}
 }
 
@@ -58,24 +62,25 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "up", "k":
-			m.game.Tick(game.Up, m.logger)
+			m.nextSnakeMove = game.Up
 			return m, nil
 		case "right", "l":
-			m.game.Tick(game.Right, m.logger)
+			m.nextSnakeMove = game.Right
 			return m, nil
 		case "down", "j":
-			m.game.Tick(game.Down, m.logger)
+			m.nextSnakeMove = game.Down
 			return m, nil
 		case "left", "h":
-			m.game.Tick(game.Left, m.logger)
+			m.nextSnakeMove = game.Left
 			return m, nil
 		}
 
 	case TickMsg:
-		//m.msg = "timer: " + time.Now().Format("15:04:05")
-		//m.msg = m.game.Snake.Dir.String()
-		//m.msg = m.game.Snake.Body[0].String()
+		// update message displayed in the up-button
 		m.msg = m.game.StateAsString()
+
+		// update the game state
+		m.game.Tick(m.nextSnakeMove, m.logger)
 
 		if m.game.State == game.GameOver {
 			return m, nil
