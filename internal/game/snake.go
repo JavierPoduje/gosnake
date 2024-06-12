@@ -16,21 +16,18 @@ func dirs() [][]int {
 type Snake struct {
 	Body []Coord // head is at index 0
 	Dir  Direction
+	add  bool
 }
 
 func NewSnake() *Snake {
 	return &Snake{
-		Body: []Coord{{defaultSnakeX, defaultSnakeY}},
-		Dir:  defaultSnakeDir,
+		Body:              []Coord{{defaultSnakeX, defaultSnakeY}},
+		Dir:               defaultSnakeDir,
 	}
 }
 
 func (s *Snake) Add() {
-	lastCoord := s.Body[len(s.Body)-1]
-	s.Body = append(s.Body, Coord{
-		X: lastCoord.X,
-		Y: lastCoord.Y,
-	})
+	s.add = true
 }
 
 func (s *Snake) NextHead(dir Direction) Coord {
@@ -51,36 +48,27 @@ func (s *Snake) Move(dir Direction) error {
 		return nil
 	}
 
-	var head Coord
 	var prev Coord
 	dirCoord := dirs()[dir]
 
 	newBody := make([]Coord, len(s.Body))
-	skipLastCoord := false
 	for i, coord := range s.Body {
-		if skipLastCoord && i == len(s.Body)-1{
-			break
-		}
-
 		if i == 0 {
-			head = Coord{
+			prev = coord
+			newBody[i] = Coord{
 				coord.X + dirCoord[0],
 				coord.Y + dirCoord[1],
 			}
-			newBody[i] = head
 		} else {
-			secondToLastIdx := len(s.Body) - 2
-			lastIdx := len(s.Body) - 1
-
-			isSecondToLast := i == secondToLastIdx
-
-			if isSecondToLast && s.Body[lastIdx] == s.Body[secondToLastIdx] {
-				skipLastCoord = true
-			}
-
-			prev = newBody[i-1]
+			tempCoord := coord
 			newBody[i] = prev
+			prev = tempCoord
 		}
+	}
+
+	if s.add {
+		newBody = append(newBody, prev)
+		s.add = false
 	}
 
 	s.Body = newBody

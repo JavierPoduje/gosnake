@@ -1,8 +1,10 @@
 package game
 
 import (
+	"gosnake/internal/logger"
 	"log"
 	"math/rand/v2"
+	"strings"
 )
 
 type Game struct {
@@ -21,7 +23,7 @@ func NewGame(width, height int) *Game {
 	}
 }
 
-func (g *Game) Tick(dir Direction) {
+func (g *Game) Tick(dir Direction, logger *logger.Logger) {
 	if !g.canSnakeMove(dir) {
 		return
 	}
@@ -42,6 +44,12 @@ func (g *Game) Tick(dir Direction) {
 		for g.Snake.Contains(*g.Apple) {
 			g.Apple = g.getRandApple()
 		}
+
+		snakeBody := strings.Builder{}
+		for _, coord := range g.Snake.Body {
+			snakeBody.WriteString(coord.String())
+		}
+		logger.Log(snakeBody.String())
 	}
 }
 

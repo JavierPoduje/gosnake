@@ -2,8 +2,8 @@ package model
 
 import (
 	"gosnake/internal/game"
-	"gosnake/internal/styles"
 	"gosnake/internal/logger"
+	"gosnake/internal/styles"
 	"strings"
 	"time"
 
@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	TerminalWidth  = 160
+	TerminalWidth  = 40
 	TerminalHeight = 24
 	CanvasWidth    = 20
 	CanvasHeight   = 20
@@ -27,8 +27,8 @@ const (
 type TickMsg time.Time
 
 type Model struct {
-	msg  string
-	game *game.Game
+	msg    string
+	game   *game.Game
 	logger *logger.Logger
 }
 
@@ -40,8 +40,8 @@ func (m Model) tick() tea.Cmd {
 
 func NewModel() Model {
 	return Model{
-		msg:  "Initializing...",
-		game: game.NewGame(CanvasWidth, CanvasHeight),
+		msg:    "Initializing...",
+		game:   game.NewGame(CanvasWidth, CanvasHeight),
 		logger: logger.NewLogger("debug.log"),
 	}
 }
@@ -58,20 +58,23 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "up", "k":
-			m.game.Tick(game.Up)
+			m.game.Tick(game.Up, m.logger)
 			return m, nil
 		case "right", "l":
-			m.game.Tick(game.Right)
+			m.game.Tick(game.Right, m.logger)
 			return m, nil
 		case "down", "j":
-			m.game.Tick(game.Down)
+			m.game.Tick(game.Down, m.logger)
 			return m, nil
 		case "left", "h":
-			m.game.Tick(game.Left)
+			m.game.Tick(game.Left, m.logger)
 			return m, nil
 		}
 
 	case TickMsg:
+		//m.msg = "timer: " + time.Now().Format("15:04:05")
+		//m.msg = m.game.Snake.Dir.String()
+		//m.msg = m.game.Snake.Body[0].String()
 		m.msg = m.game.Apple.String()
 		return m, m.tick()
 	}
