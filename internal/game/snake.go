@@ -40,6 +40,11 @@ func (s *Snake) NextHead(dir Direction) Coord {
 	}
 }
 
+func (s *Snake) IsValidMove(dir Direction) bool {
+	nextHead := s.NextHead(dir)
+	return !s.Contains(nextHead)
+}
+
 func (s *Snake) Move(dir Direction) error {
 	if dir < 0 && dir >= 4 {
 		return errors.New("Invalid direction")

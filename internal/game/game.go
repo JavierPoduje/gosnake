@@ -64,7 +64,7 @@ func (g *Game) Tick(dir Direction, logger *logger.Logger) {
 
 func (m Game) canSnakeMove(dir Direction) bool {
 	nextHead := m.Snake.NextHead(dir)
-	return m.Canvas.InBounds(nextHead)
+	return m.Snake.IsValidMove(dir) && m.Canvas.InBounds(nextHead)
 }
 
 func (g Game) getRandApple() *Coord {
