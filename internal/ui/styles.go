@@ -1,4 +1,4 @@
-package styles
+package ui
 
 import (
 	"github.com/charmbracelet/lipgloss"
@@ -16,25 +16,50 @@ func Canvas(width, height int) lipgloss.Style {
 		BorderBottom(true)
 }
 
-func NeutralChar() lipgloss.Style {
-	return lipgloss.NewStyle().
-		Width(1).
-		Height(1).
-		Foreground(lipgloss.Color("#383838"))
-}
-
 func Button() lipgloss.Style {
 	textStyle := lipgloss.NewStyle().
 		Bold(true).
-		Foreground(lipgloss.Color("#FAFAFA")).
+		Foreground(White()).
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("#7D56F4")).
+		BorderForeground(Purple()).
 		Align(lipgloss.Center).
 		PaddingTop(1).
 		Width(22).
 		Height(3)
 
 	return textStyle
+}
+
+func White() lipgloss.Color {
+	return lipgloss.Color("#FAFAFA")
+}
+
+func Neutral() lipgloss.Color {
+	return lipgloss.Color("#383838")
+}
+
+func Purple() lipgloss.Color {
+	return lipgloss.Color("#7D56F4")
+}
+
+func Pink() lipgloss.Color {
+	return lipgloss.Color("#f23cc7")
+}
+
+func Red() lipgloss.Color {
+	return lipgloss.Color("#ff5291")
+}
+
+func Orange() lipgloss.Color {
+	return lipgloss.Color("#ff8c64")
+}
+
+func Gold() lipgloss.Color {
+	return lipgloss.Color("#ffc652")
+}
+
+func Yellow() lipgloss.Color {
+	return lipgloss.Color("#f9f871")
 }
 
 //func Container() lipgloss.Style {

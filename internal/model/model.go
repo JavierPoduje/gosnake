@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"gosnake/internal/game"
 	"gosnake/internal/logger"
-	"gosnake/internal/styles"
+	"gosnake/internal/ui"
 	"strings"
 	"time"
 
@@ -114,21 +114,21 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	canvasContent := m.BuildNextCanvasContent()
 
-	return lipgloss.Place(
+	return ui.Layout(
 		m.width, m.height,
-		lipgloss.Center, lipgloss.Center,
 		lipgloss.JoinHorizontal(
 			lipgloss.Top,
-			styles.Canvas(CanvasWidth, CanvasHeight).Render(canvasContent),
+			ui.Canvas(CanvasWidth, CanvasHeight).Render(canvasContent),
 			lipgloss.JoinVertical(
 				lipgloss.Center,
-				styles.Button().Render(m.msg),
-				styles.Button().Render("something else"),
+				ui.Button().Render(m.msg),
+				ui.Button().Render("something else"),
 			),
 		),
 	)
 }
 
+// TODO: should this be a component?
 func (m Model) BuildNextCanvasContent() string {
 	strCanvas := strings.Builder{}
 
@@ -141,11 +141,11 @@ func (m Model) BuildNextCanvasContent() string {
 	for Y := 0; Y < width; Y++ {
 		for X := 0; X < height; X++ {
 			if snake.Contains(game.Coord{X: X, Y: Y}) {
-				strCanvas.WriteString(SnakeChar)
+				strCanvas.WriteString(ui.Snake(SnakeChar))
 			} else if apple.X == X && apple.Y == Y {
-				strCanvas.WriteString(AppleChar)
+				strCanvas.WriteString(ui.Apple(AppleChar))
 			} else {
-				strCanvas.WriteString(styles.NeutralChar().Render(NeutralChar))
+				strCanvas.WriteString(ui.NeutralChar(NeutralChar))
 			}
 		}
 	}
