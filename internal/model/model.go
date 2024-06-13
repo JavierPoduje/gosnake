@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"gosnake/internal/game"
 	"gosnake/internal/logger"
 	"gosnake/internal/styles"
@@ -12,10 +13,10 @@ import (
 )
 
 const (
-	TerminalWidth  = 40
-	TerminalHeight = 24
-	CanvasWidth    = 20
-	CanvasHeight   = 20
+	DefaultTerminalWidth  = 40
+	DefaultTerminalHeight = 24
+	CanvasWidth           = 20
+	CanvasHeight          = 20
 )
 
 const (
@@ -33,6 +34,8 @@ type Model struct {
 	game          *game.Game
 	logger        *logger.Logger
 	nextSnakeMove game.Direction
+	width         int
+	height        int
 }
 
 func (m Model) tick() tea.Cmd {
@@ -47,6 +50,8 @@ func NewModel() Model {
 		game:          game.NewGame(CanvasWidth, CanvasHeight),
 		logger:        logger.NewLogger("debug.log"),
 		nextSnakeMove: defaultSnakeDir,
+		width:         DefaultTerminalWidth,
+		height:        DefaultTerminalHeight,
 	}
 }
 
@@ -56,6 +61,10 @@ func (m Model) Init() tea.Cmd {
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+
+	case tea.WindowSizeMsg:
+		m.logger.Log(fmt.Sprintf("width: %d, height: %d", msg.Width, msg.Height))
+		m.width, m.height = msg.Width, msg.Height
 
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -91,6 +100,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.game.Tick(m.nextSnakeMove, m.logger)
 
 		if m.game.State == game.GameOver {
+			// update message displayed in the up-button
+			m.msg = m.game.StateAsString()
 			return m, nil
 		}
 
@@ -101,16 +112,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	canvas := m.BuildNextCanvasFrame()
+	canvasContent := m.BuildNextCanvasContent()
 
-	return lipgloss.JoinVertical(
-		lipgloss.Center,
-		styles.Button(m.msg),
-		canvas,
+	return lipgloss.Place(
+		m.width, m.height,
+		lipgloss.Center, lipgloss.Center,
+		lipgloss.JoinHorizontal(
+			lipgloss.Top,
+			styles.Canvas(CanvasWidth, CanvasHeight).Render(canvasContent),
+			lipgloss.JoinVertical(
+				lipgloss.Center,
+				styles.Button().Render(m.msg),
+				styles.Button().Render("something else"),
+			),
+		),
 	)
 }
 
-func (m Model) BuildNextCanvasFrame() string {
+func (m Model) BuildNextCanvasContent() string {
 	strCanvas := strings.Builder{}
 
 	width := m.game.Canvas.Width
@@ -131,11 +150,5 @@ func (m Model) BuildNextCanvasFrame() string {
 		}
 	}
 
-	canvas := lipgloss.Place(
-		TerminalWidth, TerminalHeight,
-		lipgloss.Center, lipgloss.Center,
-		styles.Canvas(CanvasWidth, CanvasHeight).Render(strCanvas.String()),
-	)
-
-	return canvas
+	return strCanvas.String()
 }

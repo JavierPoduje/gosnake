@@ -23,7 +23,7 @@ func NeutralChar() lipgloss.Style {
 		Foreground(lipgloss.Color("#383838"))
 }
 
-func Button(label string) string {
+func Button() lipgloss.Style {
 	textStyle := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("#FAFAFA")).
@@ -34,7 +34,7 @@ func Button(label string) string {
 		Width(22).
 		Height(3)
 
-	return textStyle.Render(label)
+	return textStyle
 }
 
 //func Container() lipgloss.Style {
