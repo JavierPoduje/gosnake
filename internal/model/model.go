@@ -119,7 +119,7 @@ func (m Model) View() string {
 			ui.Canvas(CanvasWidth, CanvasHeight).Render(canvasContent),
 			lipgloss.JoinVertical(
 				lipgloss.Center,
-				ui.Button().Render(m.msg),
+				ui.ActionButton(m.game.State).Render(m.msg),
 				ui.Button().Render("something else"),
 			),
 		),
@@ -134,8 +134,6 @@ func (m Model) getActionButtonLabel() string {
 	case game.GameOver:
 		return "[R]estart"
 	case game.Paused:
-		return "[R]estart"
-	case game.Win:
 		return "[R]estart"
 	default:
 		log.Panic("Unknown game state")

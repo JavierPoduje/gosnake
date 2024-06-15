@@ -8,6 +8,12 @@ const (
 )
 
 const (
+	Running = iota
+	GameOver
+	Paused
+)
+
+const (
 	defaultSnakeX   = 4
 	defaultSnakeY   = 4
 	defaultSnakeDir = Right

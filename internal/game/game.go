@@ -7,13 +7,6 @@ import (
 	"strings"
 )
 
-const (
-	Running = iota
-	GameOver
-	Paused
-	Win
-)
-
 type Game struct {
 	Snake  *Snake
 	Canvas *Canvas
