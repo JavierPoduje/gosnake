@@ -131,6 +131,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		// update the game state
 		m.msg = m.getActionButtonLabel()
 
+		m.logger.Log(fmt.Sprintf("Score: %s", m.game.Stats.ScoreAsString()))
+
 		if m.game.State == game.Running {
 			return m, m.tick(m.game.Snake.Speed)
 		}
@@ -152,12 +154,13 @@ func (m Model) View() string {
 			lipgloss.JoinVertical(
 				lipgloss.Center,
 				ui.ActionButton(m.game.State).Render(m.msg),
-				// TODO: when all the stats are implemented, we should
-				// calculate the whitespaces between the header and the value,
-				// so that they are kinda `justify-content: space-between`.
+				// TODO: join headers vertically; join values vertically
 				ui.Stats().Render(
 					ui.StatHeader().Render("Eaten apples:"),
 					ui.StatValue().Render(strconv.Itoa(m.game.Stats.EatenApples)),
+					"\n",
+					ui.StatHeader().Render("Score:"),
+					ui.StatValue().Render(m.game.Stats.RoundedScoreAsString()),
 				),
 			),
 		),

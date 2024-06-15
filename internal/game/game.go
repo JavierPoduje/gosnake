@@ -3,7 +3,6 @@ package game
 import (
 	"log"
 	"math/rand/v2"
-	"strings"
 )
 
 type Game struct {
@@ -62,15 +61,10 @@ func (g Game) getRandApple() *Coord {
 func (g *Game) eatApple() {
 	g.Snake.Add()
 	g.Stats.EatApple()
+	g.Stats.UpdateScore(g.Snake.Speed)
 
 	g.Apple = g.getRandApple()
-
 	for g.Snake.Contains(*g.Apple) {
 		g.Apple = g.getRandApple()
-	}
-
-	snakeBody := strings.Builder{}
-	for _, coord := range g.Snake.Body {
-		snakeBody.WriteString(coord.String())
 	}
 }

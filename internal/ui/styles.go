@@ -43,7 +43,7 @@ func Stats() lipgloss.Style {
 		BorderForeground(Purple()).
 		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
-		Height(3)
+		Height(6)
 }
 
 func ActionButton(state int) lipgloss.Style {
