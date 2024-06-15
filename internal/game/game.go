@@ -1,7 +1,6 @@
 package game
 
 import (
-	"gosnake/internal/logger"
 	"log"
 	"math/rand/v2"
 	"strings"
@@ -11,6 +10,7 @@ type Game struct {
 	Snake  *Snake
 	Canvas *Canvas
 	Apple  *Coord
+	Stats  *Stats
 
 	NextMove Direction
 	State    int
@@ -23,10 +23,11 @@ func NewGame(width, height int) *Game {
 		Apple:    &Coord{X: defaultAppleX, Y: defaultAppleY},
 		NextMove: Up,
 		State:    Running,
+		Stats:    NewStats(),
 	}
 }
 
-func (g *Game) Tick(dir Direction, logger *logger.Logger) {
+func (g *Game) Tick(dir Direction) {
 	if !g.canSnakeMove(dir) {
 		g.State = GameOver
 		return
@@ -38,22 +39,8 @@ func (g *Game) Tick(dir Direction, logger *logger.Logger) {
 		log.Fatalf("Invalid m.NextMove: %v", err)
 	}
 
-	head := g.Snake.Body[0]
-
-	if head == *g.Apple {
-		g.Snake.Add()
-
-		g.Apple = g.getRandApple()
-
-		for g.Snake.Contains(*g.Apple) {
-			g.Apple = g.getRandApple()
-		}
-
-		snakeBody := strings.Builder{}
-		for _, coord := range g.Snake.Body {
-			snakeBody.WriteString(coord.String())
-		}
-		logger.Log(snakeBody.String())
+	if g.Snake.Body[0] == *g.Apple {
+		g.eatApple()
 	}
 }
 
@@ -70,4 +57,20 @@ func (g Game) getRandApple() *Coord {
 	Y := rand.IntN(height)
 
 	return &Coord{X: X, Y: Y}
+}
+
+func (g *Game) eatApple() {
+	g.Snake.Add()
+	g.Stats.EatApple()
+
+	g.Apple = g.getRandApple()
+
+	for g.Snake.Contains(*g.Apple) {
+		g.Apple = g.getRandApple()
+	}
+
+	snakeBody := strings.Builder{}
+	for _, coord := range g.Snake.Body {
+		snakeBody.WriteString(coord.String())
+	}
 }

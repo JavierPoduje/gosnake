@@ -6,6 +6,7 @@ import (
 	"gosnake/internal/logger"
 	"gosnake/internal/ui"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -124,7 +125,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case TickMsg:
 		// update the game state
-		m.game.Tick(m.nextSnakeMove, m.logger)
+		m.game.Tick(m.nextSnakeMove)
 		// update the game state
 		m.msg = m.getActionButtonLabel()
 
@@ -149,7 +150,13 @@ func (m Model) View() string {
 			lipgloss.JoinVertical(
 				lipgloss.Center,
 				ui.ActionButton(m.game.State).Render(m.msg),
-				ui.Button().Render("something else"),
+				// TODO: when all the stats are implemented, we should
+				// calculate the whitespaces between the header and the value,
+				// so that they are kinda `justify-content: space-between`.
+				ui.Stats().Render(
+					ui.StatHeader().Render("Eaten apples:"),
+					ui.StatValue().Render(strconv.Itoa(m.game.Stats.EatenApples)),
+				),
 			),
 		),
 	)

@@ -19,32 +19,42 @@ func Canvas(width, height int) lipgloss.Style {
 		BorderBottom(true)
 }
 
-func ActionButton(state int) lipgloss.Style {
-	textStyle := lipgloss.NewStyle().
+func StatHeader() lipgloss.Style {
+	return lipgloss.NewStyle().
 		Bold(true).
-		Foreground(White()).
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(colorByState(state)).
-		Align(lipgloss.Center).
-		PaddingTop(1).
-		Width(22).
-		Height(3)
-
-	return textStyle
+		Foreground(Purple()).
+		Align(lipgloss.Left).
+		Height(1)
 }
 
-func Button() lipgloss.Style {
-	textStyle := lipgloss.NewStyle().
+func StatValue() lipgloss.Style {
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(White()).
+		Align(lipgloss.Right).
+		Height(1)
+}
+
+func Stats() lipgloss.Style {
+	return lipgloss.NewStyle().
 		Bold(true).
 		Foreground(White()).
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(Purple()).
-		Align(lipgloss.Center).
-		PaddingTop(1).
+		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
 		Height(3)
+}
 
-	return textStyle
+func ActionButton(state int) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Bold(true).
+		Foreground(White()).
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(colorByState(state)).
+		Align(lipgloss.Center, lipgloss.Center).
+		Width(22).
+		Height(3)
 }
 
 func colorByState(state int) lipgloss.Color {
