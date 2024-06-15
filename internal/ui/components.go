@@ -20,7 +20,7 @@ func Apple(char string) string {
 
 func Snake(char string) string {
 	return lipgloss.NewStyle().
-		Foreground(YellowColor()).
+		Foreground(WhiteColor()).
 		Render(char)
 }
 

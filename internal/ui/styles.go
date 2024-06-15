@@ -1,9 +1,6 @@
 package ui
 
 import (
-	"gosnake/internal/game"
-	"log"
-
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -12,7 +9,8 @@ func CanvasStyles(width, height int) lipgloss.Style {
 		Width(width).
 		Height(height).
 		Border(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("#fff")).
+		BorderForeground(PurpleColor()).
+		MarginRight(2).
 		BorderTop(true).
 		BorderLeft(true).
 		BorderRight(true).
@@ -29,7 +27,7 @@ func StatHeaderStyles() lipgloss.Style {
 
 func StatValueStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(WhiteColor()).
+		Foreground(RedColor()).
 		Align(lipgloss.Right).
 		Height(1)
 }
@@ -48,27 +46,10 @@ func StatsStyles() lipgloss.Style {
 func ActionButtonStyles(state int) lipgloss.Style {
 	return lipgloss.NewStyle().
 		Bold(true).
-		Foreground(WhiteColor()).
+		Foreground(RedColor()).
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(colorByState(state)).
+		BorderForeground(PurpleColor()).
 		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
 		Height(3)
-}
-
-// HELPERS
-
-func colorByState(state int) lipgloss.Color {
-	switch state {
-	case game.Running:
-		return GreenColor()
-	case game.GameOver:
-		return RedColor()
-	case game.Paused:
-		return OrangeColor()
-	default:
-		log.Panic("Unknown game state")
-	}
-
-	return lipgloss.Color("#000")
 }
