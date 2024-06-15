@@ -31,12 +31,12 @@ type TickMsg time.Time
 const defaultSnakeDir = game.Right
 
 type Model struct {
-	msg            string
-	game           *game.Game
-	logger         *logger.Logger
-	nextSnakeMove  game.Direction
-	width          int
-	height         int
+	msg           string
+	game          *game.Game
+	logger        *logger.Logger
+	nextSnakeMove game.Direction
+	width         int
+	height        int
 }
 
 func (m Model) tick() tea.Cmd {
@@ -54,6 +54,13 @@ func NewModel() Model {
 		width:         DefaultTerminalWidth,
 		height:        DefaultTerminalHeight,
 	}
+}
+
+func RestartModel(width, height int) Model {
+	m := NewModel()
+	m.width = width
+	m.height = height
+	return m
 }
 
 func (m Model) Init() tea.Cmd {
@@ -109,7 +116,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case game.GameOver:
 				m.game.State = game.Running
 				m.msg = m.getActionButtonLabel()
-				return NewModel(), m.tick()
+				return RestartModel(m.width, m.height), m.tick()
 			default:
 				log.Panic("Unreachable")
 			}
