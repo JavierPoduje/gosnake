@@ -21,15 +21,14 @@ func Canvas(width, height int) lipgloss.Style {
 
 func StatHeader() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Bold(true).
 		Foreground(Purple()).
 		Align(lipgloss.Left).
+		PaddingRight(3).
 		Height(1)
 }
 
 func StatValue() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Bold(true).
 		Foreground(White()).
 		Align(lipgloss.Right).
 		Height(1)

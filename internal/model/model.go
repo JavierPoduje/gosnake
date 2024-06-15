@@ -146,6 +146,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m Model) View() string {
 	canvasContent := m.BuildNextCanvasContent()
 
+	stats := [][]string{
+		{"Eaten apples:", strconv.Itoa(m.game.Stats.EatenApples)},
+		{"Score:", m.game.Stats.RoundedScoreAsString()},
+	}
+
 	return ui.Layout(
 		m.width, m.height,
 		lipgloss.JoinHorizontal(
@@ -154,14 +159,7 @@ func (m Model) View() string {
 			lipgloss.JoinVertical(
 				lipgloss.Center,
 				ui.ActionButton(m.game.State).Render(m.msg),
-				// TODO: join headers vertically; join values vertically
-				ui.Stats().Render(
-					ui.StatHeader().Render("Eaten apples:"),
-					ui.StatValue().Render(strconv.Itoa(m.game.Stats.EatenApples)),
-					"\n",
-					ui.StatHeader().Render("Score:"),
-					ui.StatValue().Render(m.game.Stats.RoundedScoreAsString()),
-				),
+				ui.StatCard(stats),
 			),
 		),
 	)
