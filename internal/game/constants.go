@@ -1,5 +1,7 @@
 package game
 
+type Direction int
+
 const (
 	Up = iota
 	Right

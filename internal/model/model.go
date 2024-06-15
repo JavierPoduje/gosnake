@@ -31,12 +31,12 @@ type TickMsg time.Time
 const defaultSnakeDir = game.Right
 
 type Model struct {
-	msg           string
-	game          *game.Game
-	logger        *logger.Logger
-	nextSnakeMove game.Direction
-	width         int
-	height        int
+	msg            string
+	game           *game.Game
+	logger         *logger.Logger
+	nextSnakeMove  game.Direction
+	width          int
+	height         int
 }
 
 func (m Model) tick() tea.Cmd {
@@ -71,32 +71,54 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
+
+		// SNAKE MOVEMENTS
 		case "up", "k":
-			if !m.game.Snake.IsOppositeDir(game.Up) {
-				m.nextSnakeMove = game.Up
+			if m.game.Snake.IsOppositeDir(game.Up) {
+				return m, nil
 			}
-			return m, nil
+			m.nextSnakeMove = game.Up
 		case "right", "l":
-			if !m.game.Snake.IsOppositeDir(game.Right) {
-				m.nextSnakeMove = game.Right
+			if m.game.Snake.IsOppositeDir(game.Right) {
+				return m, nil
 			}
-			return m, nil
+			m.nextSnakeMove = game.Right
 		case "down", "j":
-			if !m.game.Snake.IsOppositeDir(game.Down) {
-				m.nextSnakeMove = game.Down
+			if m.game.Snake.IsOppositeDir(game.Down) {
+				return m, nil
 			}
-			return m, nil
+			m.nextSnakeMove = game.Down
 		case "left", "h":
-			if !m.game.Snake.IsOppositeDir(game.Left) {
-				m.nextSnakeMove = game.Left
+			if m.game.Snake.IsOppositeDir(game.Left) {
+				return m, nil
 			}
+			m.nextSnakeMove = game.Left
+		// GAME ACTIONS
+		case "p", "P":
+			m.logger.Log("Pausing the game")
+			m.game.State = game.Paused
+			m.msg = m.getActionButtonLabel()
 			return m, nil
+		case "r", "R":
+			m.logger.Log("Restarting the game")
+			switch m.game.State {
+			case game.Paused:
+				m.game.State = game.Running
+				m.msg = m.getActionButtonLabel()
+				return m, m.tick()
+			case game.GameOver:
+				m.game.State = game.Running
+				m.msg = m.getActionButtonLabel()
+				return NewModel(), m.tick()
+			default:
+				log.Panic("Unreachable")
+			}
 		}
 
 	case TickMsg:
 		// update the game state
 		m.game.Tick(m.nextSnakeMove, m.logger)
-
+		// update the game state
 		m.msg = m.getActionButtonLabel()
 
 		if m.game.State == game.Running {
