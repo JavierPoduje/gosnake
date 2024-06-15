@@ -20,7 +20,7 @@ func NewGame(width, height int) *Game {
 	return &Game{
 		Snake:    NewSnake(),
 		Canvas:   NewCanvas(width, height),
-		Apple:    &Coord{X: defaultAppleX, Y: defaultAppleY},
+		Apple:    &Coord{X: DefaultAppleX, Y: DefaultAppleY},
 		NextMove: Up,
 		State:    Running,
 		Stats:    NewStats(),

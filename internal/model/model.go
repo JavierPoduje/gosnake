@@ -30,6 +30,7 @@ const (
 type TickMsg time.Time
 
 const defaultSnakeDir = game.Right
+const defaultSnakeSpeed = float64(3)
 
 type Model struct {
 	msg           string
@@ -40,8 +41,9 @@ type Model struct {
 	height        int
 }
 
-func (m Model) tick() tea.Cmd {
-	return tea.Tick(time.Second/3, func(t time.Time) tea.Msg {
+func (m Model) tick(snakeSpeed float64) tea.Cmd {
+	interval := time.Second / time.Duration(snakeSpeed)
+	return tea.Tick(interval, func(t time.Time) tea.Msg {
 		return TickMsg(t)
 	})
 }
@@ -65,7 +67,7 @@ func RestartModel(width, height int) Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	return m.tick()
+	return m.tick(defaultSnakeSpeed)
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -113,11 +115,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case game.Paused:
 				m.game.State = game.Running
 				m.msg = m.getActionButtonLabel()
-				return m, m.tick()
+				return m, m.tick(m.game.Snake.Speed)
 			case game.GameOver:
 				m.game.State = game.Running
 				m.msg = m.getActionButtonLabel()
-				return RestartModel(m.width, m.height), m.tick()
+				return RestartModel(m.width, m.height), m.tick(m.game.Snake.Speed)
 			default:
 				log.Panic("Unreachable")
 			}
@@ -130,7 +132,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.msg = m.getActionButtonLabel()
 
 		if m.game.State == game.Running {
-			return m, m.tick()
+			return m, m.tick(m.game.Snake.Speed)
 		}
 
 		return m, nil

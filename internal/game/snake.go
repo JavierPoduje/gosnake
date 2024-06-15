@@ -15,15 +15,17 @@ func dirs() [][]int {
 }
 
 type Snake struct {
-	Body []Coord // head is at index 0
-	Dir  Direction
-	add  bool
+	Body  []Coord // head is at index 0
+	Dir   Direction
+	Speed float64
+	add   bool
 }
 
 func NewSnake() *Snake {
 	return &Snake{
-		Body: []Coord{{defaultSnakeX, defaultSnakeY}},
-		Dir:  defaultSnakeDir,
+		Body:  []Coord{{DefaultSnakeX, DefaultSnakeY}},
+		Dir:   DefaultSnakeDir,
+		Speed: DefaultSnakeSpeed,
 	}
 }
 
@@ -74,6 +76,7 @@ func (s *Snake) Move(dir Direction) error {
 
 	if s.add {
 		newBody = append(newBody, prev)
+		s.Speed *= SpeedIncreateRate
 		s.add = false
 	}
 
