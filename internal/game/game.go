@@ -10,6 +10,8 @@ import (
 const (
 	Running = iota
 	GameOver
+	Paused
+	Win
 )
 
 type Game struct {
@@ -75,17 +77,4 @@ func (g Game) getRandApple() *Coord {
 	Y := rand.IntN(height)
 
 	return &Coord{X: X, Y: Y}
-}
-
-func (g Game) StateAsString() string {
-	switch g.State {
-	case Running:
-		return "Running"
-	case GameOver:
-		return "Game Over"
-	}
-
-	log.Fatalf("Invalid game state: %v", g.State)
-
-	return ""
 }

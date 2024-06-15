@@ -5,6 +5,7 @@ import (
 	"gosnake/internal/game"
 	"gosnake/internal/logger"
 	"gosnake/internal/ui"
+	"log"
 	"strings"
 	"time"
 
@@ -93,19 +94,16 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case TickMsg:
-		// update message displayed in the up-button
-		m.msg = m.game.StateAsString()
-
 		// update the game state
 		m.game.Tick(m.nextSnakeMove, m.logger)
 
-		if m.game.State == game.GameOver {
-			// update message displayed in the up-button
-			m.msg = m.game.StateAsString()
-			return m, nil
+		m.msg = m.getActionButtonLabel()
+
+		if m.game.State == game.Running {
+			return m, m.tick()
 		}
 
-		return m, m.tick()
+		return m, nil
 	}
 
 	return m, nil
@@ -126,6 +124,24 @@ func (m Model) View() string {
 			),
 		),
 	)
+}
+
+// Update action button message by game state.
+func (m Model) getActionButtonLabel() string {
+	switch m.game.State {
+	case game.Running:
+		return "[P]ause"
+	case game.GameOver:
+		return "[R]estart"
+	case game.Paused:
+		return "[R]estart"
+	case game.Win:
+		return "[R]estart"
+	default:
+		log.Panic("Unknown game state")
+	}
+
+	return ""
 }
 
 // TODO: should this be a component?
