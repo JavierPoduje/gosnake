@@ -155,11 +155,11 @@ func (m Model) View() string {
 		m.width, m.height,
 		lipgloss.JoinHorizontal(
 			lipgloss.Top,
-			ui.Canvas(CanvasWidth, CanvasHeight).Render(canvasContent),
+			ui.CanvasStyles(CanvasWidth, CanvasHeight).Render(canvasContent),
 			lipgloss.JoinVertical(
 				lipgloss.Center,
-				ui.ActionButton(m.game.State).Render(m.msg),
-				ui.StatCard(stats),
+				ui.ActionButtonStyles(m.game.State).Render(m.msg),
+				ui.StatsCard(stats),
 			),
 		),
 	)

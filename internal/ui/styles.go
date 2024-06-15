@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func Canvas(width, height int) lipgloss.Style {
+func CanvasStyles(width, height int) lipgloss.Style {
 	return lipgloss.NewStyle().
 		Width(width).
 		Height(height).
@@ -19,36 +19,36 @@ func Canvas(width, height int) lipgloss.Style {
 		BorderBottom(true)
 }
 
-func StatHeader() lipgloss.Style {
+func StatHeaderStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(Purple()).
+		Foreground(PurpleColor()).
 		Align(lipgloss.Left).
 		PaddingRight(3).
 		Height(1)
 }
 
-func StatValue() lipgloss.Style {
+func StatValueStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(White()).
+		Foreground(WhiteColor()).
 		Align(lipgloss.Right).
 		Height(1)
 }
 
-func Stats() lipgloss.Style {
+func StatsStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
 		Bold(true).
-		Foreground(White()).
+		Foreground(WhiteColor()).
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(Purple()).
+		BorderForeground(PurpleColor()).
 		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
 		Height(6)
 }
 
-func ActionButton(state int) lipgloss.Style {
+func ActionButtonStyles(state int) lipgloss.Style {
 	return lipgloss.NewStyle().
 		Bold(true).
-		Foreground(White()).
+		Foreground(WhiteColor()).
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(colorByState(state)).
 		Align(lipgloss.Center, lipgloss.Center).
@@ -56,14 +56,16 @@ func ActionButton(state int) lipgloss.Style {
 		Height(3)
 }
 
+// HELPERS
+
 func colorByState(state int) lipgloss.Color {
 	switch state {
 	case game.Running:
-		return Green()
+		return GreenColor()
 	case game.GameOver:
-		return Red()
+		return RedColor()
 	case game.Paused:
-		return Orange()
+		return OrangeColor()
 	default:
 		log.Panic("Unknown game state")
 	}

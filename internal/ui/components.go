@@ -14,13 +14,13 @@ func Layout(width, height int, content string) string {
 
 func Apple(char string) string {
 	return lipgloss.NewStyle().
-		Foreground(Red()).
+		Foreground(RedColor()).
 		Render(char)
 }
 
 func Snake(char string) string {
 	return lipgloss.NewStyle().
-		Foreground(Yellow()).
+		Foreground(YellowColor()).
 		Render(char)
 }
 
@@ -28,26 +28,26 @@ func NeutralChar(char string) string {
 	return lipgloss.NewStyle().
 		Width(1).
 		Height(1).
-		Foreground(Neutral()).
+		Foreground(NeutralColor()).
 		Render(char)
 }
 
-func StatCard(stats [][]string) string {
+func StatsCard(stats [][]string) string {
 	var headersColumn []string
 	for _, stat := range stats {
-		header := StatHeader().Render(stat[0])
+		header := StatHeaderStyles().Render(stat[0])
 		headersColumn = append(headersColumn, header)
 	}
 	styledHeader := lipgloss.JoinVertical(lipgloss.Left, headersColumn...)
 
 	var valuesColumn []string
 	for _, stat := range stats {
-		value := StatValue().Render(stat[1])
+		value := StatValueStyles().Render(stat[1])
 		valuesColumn = append(valuesColumn, value)
 	}
 	styledValues := lipgloss.JoinVertical(lipgloss.Right, valuesColumn...)
 
-	return Stats().Render(
+	return StatsStyles().Render(
 		lipgloss.JoinHorizontal(
 			lipgloss.Top,
 			styledHeader,
