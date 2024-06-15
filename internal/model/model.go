@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -33,12 +35,77 @@ const defaultSnakeDir = game.Right
 const defaultSnakeSpeed = float64(3)
 
 type Model struct {
+	game   *game.Game
+	logger *logger.Logger
+	height int
+	width  int
+
 	msg           string
-	game          *game.Game
-	logger        *logger.Logger
 	nextSnakeMove game.Direction
-	width         int
-	height        int
+
+	help help.Model
+	keys keyMap
+}
+
+type keyMap struct {
+	Down    key.Binding
+	Help    key.Binding
+	Left    key.Binding
+	Pause   key.Binding
+	Quit    key.Binding
+	Restart key.Binding
+	Right   key.Binding
+	Up      key.Binding
+}
+
+// ShortHelp returns keybindings to be shown in the mini help view. It's part
+// of the key.Map interface.
+func (k keyMap) ShortHelp() []key.Binding {
+	return []key.Binding{k.Help, k.Quit}
+}
+
+// FullHelp returns keybindings for the expanded help view. It's part of the
+// key.Map interface.
+func (k keyMap) FullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.Up, k.Down, k.Left, k.Right}, // first column
+		{k.Quit},                        // second column
+	}
+}
+
+var keys = keyMap{
+	Up: key.NewBinding(
+		key.WithKeys("up", "k"),
+		key.WithHelp("↑/k", "move up"),
+	),
+	Down: key.NewBinding(
+		key.WithKeys("down", "j"),
+		key.WithHelp("↓/j", "move down"),
+	),
+	Left: key.NewBinding(
+		key.WithKeys("left", "h"),
+		key.WithHelp("←/h", "move left"),
+	),
+	Help: key.NewBinding(
+		key.WithKeys("?"),
+		key.WithHelp("?", "toggle help"),
+	),
+	Right: key.NewBinding(
+		key.WithKeys("right", "l"),
+		key.WithHelp("→/l", "move right"),
+	),
+	Pause: key.NewBinding(
+		key.WithKeys("p"),
+		key.WithHelp("p", "pause the game"),
+	),
+	Restart: key.NewBinding(
+		key.WithKeys("r"),
+		key.WithHelp("r", "restart the game"),
+	),
+	Quit: key.NewBinding(
+		key.WithKeys("q", "esc", "ctrl+c"),
+		key.WithHelp("q", "quit"),
+	),
 }
 
 func (m Model) tick(snakeSpeed float64) tea.Cmd {
@@ -56,6 +123,8 @@ func NewModel() Model {
 		nextSnakeMove: defaultSnakeDir,
 		width:         DefaultTerminalWidth,
 		height:        DefaultTerminalHeight,
+		help:          help.New(),
+		keys:          keys,
 	}
 }
 
@@ -78,38 +147,38 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.width, m.height = msg.Width, msg.Height
 
 	case tea.KeyMsg:
-		switch msg.String() {
-		case "ctrl+c", "q":
+		switch {
+		case key.Matches(msg, m.keys.Quit):
 			return m, tea.Quit
 
 		// SNAKE MOVEMENTS
-		case "up", "k":
+		case key.Matches(msg, m.keys.Up):
 			if m.game.Snake.IsOppositeDir(game.Up) {
 				return m, nil
 			}
 			m.nextSnakeMove = game.Up
-		case "right", "l":
+		case key.Matches(msg, m.keys.Right):
 			if m.game.Snake.IsOppositeDir(game.Right) {
 				return m, nil
 			}
 			m.nextSnakeMove = game.Right
-		case "down", "j":
+		case key.Matches(msg, m.keys.Down):
 			if m.game.Snake.IsOppositeDir(game.Down) {
 				return m, nil
 			}
 			m.nextSnakeMove = game.Down
-		case "left", "h":
+		case key.Matches(msg, m.keys.Left):
 			if m.game.Snake.IsOppositeDir(game.Left) {
 				return m, nil
 			}
 			m.nextSnakeMove = game.Left
 		// GAME ACTIONS
-		case "p", "P":
+		case key.Matches(msg, m.keys.Pause):
 			m.logger.Log("Pausing the game")
 			m.game.State = game.Paused
 			m.msg = m.getActionButtonLabel()
 			return m, nil
-		case "r", "R":
+		case key.Matches(msg, m.keys.Restart):
 			m.logger.Log("Restarting the game")
 			switch m.game.State {
 			case game.Paused:
@@ -123,6 +192,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			default:
 				log.Panic("Unreachable")
 			}
+		// Help Action
+		case key.Matches(msg, m.keys.Help):
+			m.help.ShowAll = !m.help.ShowAll
 		}
 
 	case TickMsg:
@@ -151,6 +223,8 @@ func (m Model) View() string {
 		{"Score:", m.game.Stats.RoundedScoreAsString()},
 	}
 
+	helpView := m.help.View(m.keys)
+
 	return ui.Layout(
 		m.width, m.height,
 		lipgloss.JoinHorizontal(
@@ -162,6 +236,7 @@ func (m Model) View() string {
 				ui.StatsCard(stats),
 			),
 		),
+		helpView,
 	)
 }
 

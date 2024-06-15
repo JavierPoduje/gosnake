@@ -4,11 +4,11 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func Layout(width, height int, content string) string {
+func Layout(width, height int, content ...string) string {
 	return lipgloss.Place(
 		width, height,
 		lipgloss.Center, lipgloss.Center,
-		content,
+		lipgloss.JoinVertical(lipgloss.Center, content...),
 	)
 }
 

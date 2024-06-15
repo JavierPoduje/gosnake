@@ -3,6 +3,7 @@ module gosnake
 go 1.22.2
 
 require (
+	github.com/charmbracelet/bubbles v0.18.0
 	github.com/charmbracelet/bubbletea v0.26.3
 	github.com/charmbracelet/lipgloss v0.11.0
 )
