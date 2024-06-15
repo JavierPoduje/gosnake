@@ -18,6 +18,10 @@ func Apple(char string) string {
 		Render(char)
 }
 
+func HelpContainer(keysAsString string) string {
+	return HelpContainerStyles().Render(keysAsString)
+}
+
 func Snake(char string) string {
 	return lipgloss.NewStyle().
 		Foreground(WhiteColor()).

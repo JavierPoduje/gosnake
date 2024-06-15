@@ -28,10 +28,10 @@ const (
 	NeutralChar = "."
 )
 
-type TickMsg time.Time
-
 const defaultSnakeDir = game.Right
 const defaultSnakeSpeed = float64(3)
+
+type TickMsg time.Time
 
 type Model struct {
 	game   *game.Game
@@ -99,20 +99,23 @@ func (m Model) View() string {
 		{"Score:", m.game.Stats.RoundedScoreAsString()},
 	}
 
-	helpView := m.help.View(m.keys)
+	keysAsString := m.help.View(m.keys)
 
 	return ui.Layout(
 		m.width, m.height,
-		lipgloss.JoinHorizontal(
-			lipgloss.Top,
-			ui.CanvasStyles(CanvasWidth, CanvasHeight).Render(canvasContent),
-			lipgloss.JoinVertical(
-				lipgloss.Center,
-				ui.ActionButtonStyles(m.game.State).Render(m.msg),
-				ui.StatsCard(stats),
+		lipgloss.JoinVertical(
+			lipgloss.Right,
+			lipgloss.JoinHorizontal(
+				lipgloss.Top,
+				ui.CanvasStyles(CanvasWidth, CanvasHeight).Render(canvasContent),
+				lipgloss.JoinVertical(
+					lipgloss.Center,
+					ui.ActionButtonStyles(m.game.State).Render(m.msg),
+					ui.StatsCard(stats),
+				),
 			),
+			ui.HelpContainer(keysAsString),
 		),
-		helpView,
 	)
 }
 

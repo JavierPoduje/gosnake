@@ -17,6 +17,13 @@ func CanvasStyles(width, height int) lipgloss.Style {
 		BorderBottom(true)
 }
 
+func HelpContainerStyles() lipgloss.Style {
+	return lipgloss.NewStyle().
+		Height(3).
+		Width(35).
+		MarginTop(1)
+}
+
 func StatHeaderStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
 		Foreground(PurpleColor()).
