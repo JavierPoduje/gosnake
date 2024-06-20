@@ -19,7 +19,7 @@ func CanvasStyles(width, height int) lipgloss.Style {
 
 func HelpContainerStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Height(3).
+		Height(4).
 		Width(35).
 		MarginTop(1)
 }
