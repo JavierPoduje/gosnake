@@ -1,27 +1,23 @@
 package db
 
 import (
-	"flag"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
 
-const DB_TEST_FILE = "scores_test.txt"
-const DB_FILE = "scores.txt"
+const (
+	DB_FILE                  = "scores.txt"
+	NUMBER_OF_SCORES_TO_KEEP = 10
+)
 
 type DB struct {
 	file string
 }
 
 func NewDB() DB {
-	isTest := flag.Lookup("test.v") != nil
-
-	if isTest {
-		return DB{file: DB_TEST_FILE}
-	}
-
 	return DB{file: DB_FILE}
 }
 
@@ -54,6 +50,22 @@ func (db DB) SaveScore(score int) {
 
 	if _, err := f.WriteString(strconv.Itoa(score) + "\n"); err != nil {
 		log.Fatalf("Error writing to file: %s", err)
+	}
+
+	db.cleanScores()
+}
+
+func (db DB) cleanScores() {
+	scores := db.GetScores()
+	sort.Ints(scores)
+
+	for {
+		if len(scores) <= NUMBER_OF_SCORES_TO_KEEP {
+			break
+		}
+
+		db.deleteLastRow()
+		scores = db.GetScores()
 	}
 }
 
