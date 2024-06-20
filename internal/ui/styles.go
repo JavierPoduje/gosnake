@@ -4,6 +4,14 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+func TitleStyles() lipgloss.Style {
+	return lipgloss.NewStyle().
+		Foreground(PinkColor()).
+		Align(lipgloss.Center).
+		Height(1).
+		MarginBottom(1)
+}
+
 func CanvasStyles(width, height int) lipgloss.Style {
 	return lipgloss.NewStyle().
 		Width(width).
@@ -26,7 +34,7 @@ func HelpContainerStyles() lipgloss.Style {
 
 func StatHeaderStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(PurpleColor()).
+		Foreground(PinkColor()).
 		Align(lipgloss.Left).
 		PaddingRight(3).
 		Height(1)
@@ -34,7 +42,7 @@ func StatHeaderStyles() lipgloss.Style {
 
 func StatValueStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(RedColor()).
+		Foreground(WhiteColor()).
 		Align(lipgloss.Right).
 		Height(1)
 }
@@ -50,13 +58,24 @@ func StatsStyles() lipgloss.Style {
 		Height(6)
 }
 
-func ActionButtonStyles(state int) lipgloss.Style {
+func HistoricScoresStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
 		Bold(true).
-		Foreground(RedColor()).
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(PurpleColor()).
 		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
-		Height(3)
+		Height(12)
+}
+
+func HistoricScoresPositionStyles() lipgloss.Style {
+	return lipgloss.NewStyle().
+		Foreground(PinkColor()).
+		Height(1)
+}
+
+func HistoricScoresValueStyles() lipgloss.Style {
+	return lipgloss.NewStyle().
+		Foreground(WhiteColor()).
+		Height(1)
 }

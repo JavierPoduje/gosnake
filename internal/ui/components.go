@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -14,7 +15,7 @@ func Layout(width, height int, content ...string) string {
 
 func Apple(char string) string {
 	return lipgloss.NewStyle().
-		Foreground(RedColor()).
+		Foreground(PinkColor()).
 		Render(char)
 }
 
@@ -37,6 +38,8 @@ func NeutralChar(char string) string {
 }
 
 func StatsCard(stats [][]string) string {
+	title := "Stats"
+
 	var headersColumn []string
 	for _, stat := range stats {
 		header := StatHeaderStyles().Render(stat[0])
@@ -52,10 +55,48 @@ func StatsCard(stats [][]string) string {
 	styledValues := lipgloss.JoinVertical(lipgloss.Right, valuesColumn...)
 
 	return StatsStyles().Render(
-		lipgloss.JoinHorizontal(
-			lipgloss.Top,
-			styledHeader,
-			styledValues,
+		lipgloss.JoinVertical(
+			lipgloss.Center,
+			TitleStyles().Render(title),
+			lipgloss.JoinHorizontal(
+				lipgloss.Top,
+				styledHeader,
+				styledValues,
+			),
+		),
+	)
+}
+
+func HistoricScoresCard(scores []int) string {
+	title := "History"
+
+	numberOfScoresToDisplay := 10
+
+	var scorePosition []string
+	var scoreValues []string
+	for i := 0; i < numberOfScoresToDisplay; i++ {
+		posStr := fmt.Sprintf("%d. ", i+1)
+
+		scoreStr := ""
+		if i < len(scores) {
+			scoreStr = fmt.Sprintf("%d", scores[i])
+		}
+
+		scorePosition = append(scorePosition, HistoricScoresPositionStyles().Render(posStr))
+		scoreValues = append(scoreValues, HistoricScoresValueStyles().Render(scoreStr))
+	}
+	styledPositions := lipgloss.JoinVertical(lipgloss.Right, scorePosition...)
+	stylesScores := lipgloss.JoinVertical(lipgloss.Right, scoreValues...)
+
+	return HistoricScoresStyles().Render(
+		lipgloss.JoinVertical(
+			lipgloss.Center,
+			TitleStyles().Render(title),
+			lipgloss.JoinHorizontal(
+				lipgloss.Top,
+				styledPositions,
+				stylesScores,
+			),
 		),
 	)
 }

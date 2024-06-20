@@ -110,8 +110,8 @@ func (m Model) View() string {
 				ui.CanvasStyles(CanvasWidth, CanvasHeight).Render(canvasContent),
 				lipgloss.JoinVertical(
 					lipgloss.Center,
-					ui.ActionButtonStyles(m.game.State).Render(m.msg),
 					ui.StatsCard(stats),
+					ui.HistoricScoresCard([]int{10, 8, 6, 4}),
 				),
 			),
 			ui.HelpContainer(keysAsString),
