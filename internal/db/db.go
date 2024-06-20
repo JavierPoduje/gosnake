@@ -59,28 +59,23 @@ func (db DB) cleanScores() {
 	scores := db.GetScores()
 	sort.Ints(scores)
 
-	for {
-		if len(scores) <= NUMBER_OF_SCORES_TO_KEEP {
+	var scoresToKeep []int
+	for i := len(scores); i > 0; i-- {
+		scoresToKeep = append(scoresToKeep, scores[i-1])
+		if len(scoresToKeep) == NUMBER_OF_SCORES_TO_KEEP {
 			break
 		}
-
-		db.deleteLastRow()
-		scores = db.GetScores()
 	}
-}
 
-func (db DB) deleteLastRow() {
-	rows := db.getRows()
-	rows = rows[:len(rows)-1]
+	// write the cleaned scores to the file
 	f, err := os.OpenFile(db.file, os.O_TRUNC|os.O_WRONLY, 0644)
-
 	if err != nil {
 		log.Fatalf("Error opening file: %s", err)
 	}
 	defer f.Close()
 
-	for _, row := range rows {
-		if _, err := f.WriteString(row + "\n"); err != nil {
+	for _, score := range scoresToKeep {
+		if _, err := f.WriteString(strconv.Itoa(score) + "\n"); err != nil {
 			log.Fatalf("Error writing to file: %s", err)
 		}
 	}

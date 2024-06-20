@@ -108,3 +108,36 @@ func TestDB_NewDB(t *testing.T) {
 		}
 	}))
 }
+
+func TestDB_cleanScores(t *testing.T) {
+	t.Run("scores are sorted after adding a score", testCase(func(t *testing.T, c *testContext) {
+		db := NewDB()
+		db.file = DB_TEST_FILE
+
+		db.SaveScore(8)
+		db.SaveScore(5)
+		scores := db.GetScores()
+
+		if scores[2] != 8 {
+			t.Errorf("Expected %v but got %v", 8, scores[2])
+		}
+
+		if scores[4] != 5 {
+			t.Errorf("Expected %v but got %v", 5, scores[4])
+		}
+	}))
+
+	t.Run("We should only keep up to 10 scores", testCase(func(t *testing.T, c *testContext) {
+		db := NewDB()
+		db.file = DB_TEST_FILE
+
+		for i := 0; i < 10; i++ {
+			db.SaveScore(1)
+		}
+		scores := db.GetScores()
+
+		if len(scores) != 10 {
+			t.Errorf("Expected %v but got %v", 10, len(scores))
+		}
+	}))
+}
