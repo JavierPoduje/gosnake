@@ -84,7 +84,12 @@ func (db DB) cleanScores() {
 func (db DB) getRows() []string {
 	dat, err := os.ReadFile(db.file)
 	if err != nil {
-		log.Fatalf("Error reading file: %s", err)
+		// if the file doesn't exist, create it
+		_, err = os.Create(db.file)
+		if err != nil {
+			log.Fatalf("Test file couldn't be created: %v", err)
+		}
+		dat = []byte("")
 	}
 	rows := strings.Split(string(dat), "\n")
 	trimmedRows := make([]string, 0, len(rows))
