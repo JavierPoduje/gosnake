@@ -50,7 +50,13 @@ func HelpContainer(keysAsString string) string {
 	return HelpContainerStyles().Render(keysAsString)
 }
 
-func Snake(char string) string {
+func SnakeHead(char string) string {
+	return lipgloss.NewStyle().
+		Foreground(GreenColor()).
+		Render(char)
+}
+
+func SnakeBody(char string) string {
 	return lipgloss.NewStyle().
 		Foreground(PrimaryTextColor()).
 		Render(char)

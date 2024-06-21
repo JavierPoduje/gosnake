@@ -33,6 +33,10 @@ func (s *Snake) Add() {
 	s.add = true
 }
 
+func (s Snake) Head() Coord {
+	return s.Body[0]
+}
+
 func (s *Snake) NextHead(dir Direction) Coord {
 	dirCoord := dirs()[dir]
 	head := s.Body[0]

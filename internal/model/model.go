@@ -230,7 +230,11 @@ func (m Model) BuildNextCanvasContent() string {
 	for Y := 0; Y < width; Y++ {
 		for X := 0; X < height; X++ {
 			if snake.Contains(game.Coord{X: X, Y: Y}) {
-				strCanvas.WriteString(ui.Snake(SnakeChar))
+				if snake.Head().X == X && snake.Head().Y == Y {
+					strCanvas.WriteString(ui.SnakeHead(SnakeChar))
+				} else {
+					strCanvas.WriteString(ui.SnakeBody(SnakeChar))
+				}
 			} else if apple.X == X && apple.Y == Y {
 				strCanvas.WriteString(ui.Apple(AppleChar))
 			} else {
