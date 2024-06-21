@@ -29,3 +29,7 @@ func (s Stats) ScoreAsString() string {
 func (s Stats) RoundedScoreAsString() string {
 	return strconv.FormatFloat(s.Score, 'f', 0, 64)
 }
+
+func (s Stats) ScoreAsInt() int {
+	return int(s.Score)
+}

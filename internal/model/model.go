@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gosnake/internal/db"
 	"gosnake/internal/game"
 	"gosnake/internal/logger"
 	"gosnake/internal/ui"
@@ -39,8 +40,10 @@ type Model struct {
 	height int
 	width  int
 
+	db            db.DB
 	msg           string
 	nextSnakeMove game.Direction
+	scores        []int
 
 	help help.Model
 	keys keyMap
@@ -54,6 +57,7 @@ func (m Model) tick(snakeSpeed float64) tea.Cmd {
 }
 
 func NewModel() Model {
+	db := db.NewDB()
 	return Model{
 		msg:           "Initializing...",
 		game:          game.NewGame(CanvasWidth, CanvasHeight),
@@ -61,6 +65,8 @@ func NewModel() Model {
 		nextSnakeMove: defaultSnakeDir,
 		width:         DefaultTerminalWidth,
 		height:        DefaultTerminalHeight,
+		db:            db,
+		scores:        db.GetScores(),
 		help:          help.New(),
 		keys:          keys,
 	}
@@ -111,7 +117,7 @@ func (m Model) View() string {
 				lipgloss.JoinVertical(
 					lipgloss.Center,
 					ui.StatsCard(stats),
-					ui.HistoricScoresCard([]int{10, 8, 6, 4}),
+					ui.HistoricScoresCard(m.scores),
 				),
 			),
 			ui.HelpContainer(keysAsString),
@@ -199,7 +205,13 @@ func (m *Model) HandleTick() (Model, tea.Cmd) {
 		return *m, m.tick(m.game.Snake.Speed)
 	}
 
-	return *m, nil
+	if m.game.State == game.GameOver && m.game.Stats.ScoreAsInt() > 0 {
+		m.db.SaveScore(m.game.Stats.ScoreAsInt())
+		m.scores = m.db.GetScores()
+		return *m, nil
+	}
+
+	return *m, m.tick(m.game.Snake.Speed)
 }
 
 // TODO: should this be a component?
