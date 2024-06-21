@@ -2,8 +2,35 @@ package ui
 
 import (
 	"fmt"
+	"gosnake/internal/game"
+	"log"
+
 	"github.com/charmbracelet/lipgloss"
 )
+
+func Canvas(width, height int, state int, content string) string {
+	return lipgloss.JoinVertical(
+		lipgloss.Right,
+		CanvasLabel(state),
+		CanvasStyles(width, height, state).Render(content),
+	)
+}
+
+func CanvasLabel(state int) string {
+	var label string
+	switch state {
+	case game.Running:
+		label = "Running"
+	case game.GameOver:
+		label = "Game Over"
+	case game.Paused:
+		label = "Paused"
+	default:
+		log.Panic("Unknown game state")
+	}
+
+	return CanvasLabelStyles(state).Render(label)
+}
 
 func Layout(width, height int, content ...string) string {
 	return lipgloss.Place(

@@ -15,24 +15,34 @@ func TitleStyles() lipgloss.Style {
 		MarginBottom(1)
 }
 
-func CanvasStyles(width, height int, state int) lipgloss.Style {
-	var borderColor lipgloss.Color
+func CanvasLabelStyles(state int) lipgloss.Style {
+	return lipgloss.NewStyle().
+		Foreground(ColorByStateStyles(state)).
+		Height(1).
+		MarginRight(2)
+}
+
+func ColorByStateStyles(state int) lipgloss.Color {
+	var color lipgloss.Color
 	switch state {
 	case game.Running:
-		borderColor = GreenColor()
+		color = GreenColor()
 	case game.GameOver:
-		borderColor = RedColor()
+		color = RedColor()
 	case game.Paused:
-		borderColor = OrangeColor()
+		color = OrangeColor()
 	default:
 		log.Panic("Unknown game state")
 	}
+	return color
+}
 
+func CanvasStyles(width, height int, state int) lipgloss.Style {
 	return lipgloss.NewStyle().
 		Width(width).
 		Height(height).
 		Border(lipgloss.RoundedBorder()).
-		BorderForeground(borderColor).
+		BorderForeground(ColorByStateStyles(state)).
 		MarginRight(2).
 		BorderTop(true).
 		BorderLeft(true).
@@ -70,6 +80,7 @@ func StatsStyles() lipgloss.Style {
 		BorderForeground(PurpleColor()).
 		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
+		MarginTop(1).
 		Height(6)
 }
 
