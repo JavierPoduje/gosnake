@@ -2,6 +2,14 @@ package ui
 
 import "github.com/charmbracelet/lipgloss"
 
+func PrimaryTextColor() lipgloss.Color {
+	return lipgloss.Color("#FFF7DB")
+}
+
+func SecondaryTextColor() lipgloss.Color {
+	return lipgloss.Color("#C6BFA8")
+}
+
 func WhiteColor() lipgloss.Color {
 	return lipgloss.Color("#FAFAFA")
 }
@@ -11,11 +19,11 @@ func NeutralColor() lipgloss.Color {
 }
 
 func GreenColor() lipgloss.Color {
-	return lipgloss.Color("#009572")
+	return lipgloss.Color("#009177")
 }
 
-func PurpleColor() lipgloss.Color {
-	return lipgloss.Color("#7D56F4")
+func GreyColor() lipgloss.Color {
+	return lipgloss.Color("#b1ab99")
 }
 
 func PinkColor() lipgloss.Color {
@@ -23,11 +31,11 @@ func PinkColor() lipgloss.Color {
 }
 
 func RedColor() lipgloss.Color {
-	return lipgloss.Color("#ff5291")
+	return lipgloss.Color("#BE5845")
 }
 
 func OrangeColor() lipgloss.Color {
-	return lipgloss.Color("#ff8c64")
+	return lipgloss.Color("#FFD0A5")
 }
 
 func GoldColor() lipgloss.Color {

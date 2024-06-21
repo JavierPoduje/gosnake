@@ -9,7 +9,7 @@ import (
 
 func TitleStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(PinkColor()).
+		Foreground(SecondaryTextColor()).
 		Align(lipgloss.Center).
 		Height(1).
 		MarginBottom(1)
@@ -59,7 +59,7 @@ func HelpContainerStyles() lipgloss.Style {
 
 func StatHeaderStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(PinkColor()).
+		Foreground(SecondaryTextColor()).
 		Align(lipgloss.Left).
 		PaddingRight(3).
 		Height(1)
@@ -67,7 +67,7 @@ func StatHeaderStyles() lipgloss.Style {
 
 func StatValueStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(WhiteColor()).
+		Foreground(PrimaryTextColor()).
 		Align(lipgloss.Right).
 		Height(1)
 }
@@ -75,9 +75,9 @@ func StatValueStyles() lipgloss.Style {
 func StatsStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
 		Bold(true).
-		Foreground(WhiteColor()).
+		Foreground(PrimaryTextColor()).
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(PurpleColor()).
+		BorderForeground(GreyColor()).
 		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
 		MarginTop(1).
@@ -88,7 +88,7 @@ func HistoricScoresStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
 		Bold(true).
 		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(PurpleColor()).
+		BorderForeground(GreyColor()).
 		Align(lipgloss.Center, lipgloss.Center).
 		Width(22).
 		Height(12)
@@ -96,12 +96,12 @@ func HistoricScoresStyles() lipgloss.Style {
 
 func HistoricScoresPositionStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(PinkColor()).
+		Foreground(SecondaryTextColor()).
 		Height(1)
 }
 
 func HistoricScoresValueStyles() lipgloss.Style {
 	return lipgloss.NewStyle().
-		Foreground(WhiteColor()).
+		Foreground(PrimaryTextColor()).
 		Height(1)
 }

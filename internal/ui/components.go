@@ -10,7 +10,7 @@ import (
 
 func Canvas(width, height int, state int, content string) string {
 	return lipgloss.JoinVertical(
-		lipgloss.Right,
+		lipgloss.Left,
 		CanvasLabel(state),
 		CanvasStyles(width, height, state).Render(content),
 	)
@@ -42,7 +42,7 @@ func Layout(width, height int, content ...string) string {
 
 func Apple(char string) string {
 	return lipgloss.NewStyle().
-		Foreground(PinkColor()).
+		Foreground(RedColor()).
 		Render(char)
 }
 
@@ -52,7 +52,7 @@ func HelpContainer(keysAsString string) string {
 
 func Snake(char string) string {
 	return lipgloss.NewStyle().
-		Foreground(WhiteColor()).
+		Foreground(PrimaryTextColor()).
 		Render(char)
 }
 
