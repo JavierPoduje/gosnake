@@ -113,7 +113,7 @@ func (m Model) View() string {
 			lipgloss.Right,
 			lipgloss.JoinHorizontal(
 				lipgloss.Top,
-				ui.CanvasStyles(CanvasWidth, CanvasHeight).Render(canvasContent),
+				ui.CanvasStyles(CanvasWidth, CanvasHeight, m.game.State).Render(canvasContent),
 				lipgloss.JoinVertical(
 					lipgloss.Center,
 					ui.StatsCard(stats),
@@ -214,7 +214,6 @@ func (m *Model) HandleTick() (Model, tea.Cmd) {
 	return *m, m.tick(m.game.Snake.Speed)
 }
 
-// TODO: should this be a component?
 func (m Model) BuildNextCanvasContent() string {
 	strCanvas := strings.Builder{}
 
