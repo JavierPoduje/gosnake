@@ -198,6 +198,10 @@ func (m *Model) HandleKeyPressed(msg tea.KeyMsg) (Model, tea.Cmd) {
 }
 
 func (m *Model) HandleTick() (Model, tea.Cmd) {
+	if m.game.State == game.Paused {
+		return *m, nil
+	}
+
 	m.game.Tick(m.nextSnakeMove)
 	m.msg = m.getActionButtonLabel()
 
