@@ -1,6 +1,8 @@
 # go-snake
 
 Classic Snake game designed to help me get familiar with the Go programming language and the [Lipgloss](https://github.com/charmbracelet/lipgloss) library.
+![snake-image](https://github.com/JavierPoduje/gosnake/assets/32601980/222fde5c-e9d4-4afc-9141-4f73d9da701c)
+
 
 ## Controls
 
