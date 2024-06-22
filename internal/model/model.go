@@ -171,8 +171,10 @@ func (m *Model) HandleKeyPressed(msg tea.KeyMsg) (Model, tea.Cmd) {
 	case key.Matches(msg, m.keys.Quit):
 		return *m, tea.Quit
 	case key.Matches(msg, m.keys.Pause):
-		m.game.State = game.Paused
-		m.msg = m.getActionButtonLabel()
+		if m.game.State == game.Running {
+			m.game.State = game.Paused
+			m.msg = m.getActionButtonLabel()
+		}
 		return *m, nil
 	case key.Matches(msg, m.keys.Restart):
 		switch m.game.State {
