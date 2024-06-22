@@ -4,15 +4,6 @@ Classic Snake game designed to help me get familiar with the Go programming lang
 
 ## Controls
 
-- **h / left-arrow**: Move the snake to the left
-- **l / right-arrow**: Move the snake to the right
-- **k / up-arrow**: Move the snake up
-- **j / down-arrow**: Move the snake down
-- **p**: Pause the game
-- **r**: Restart the game
-- **ctrl+c / q**: Quit the game
-- **?**: Toggle help menu
-
 |Keys|Action|
 |---|---|
 |<div align="center"><kbd>k / ↑</kbd></div>|Move the snake up|
@@ -56,5 +47,4 @@ You know them...
 
 ## Contribution
 
-If you would like to contribute to **go-snake**, feel free to fork the repository and submit a pull request. We welcome any improvements, bug fixes, or new features that enhance the game.
-
+If you would like to contribute to **go-snake**, feel free to fork the repository and submit a pull request.
