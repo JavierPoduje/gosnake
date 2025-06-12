@@ -10,54 +10,89 @@ import (
 
 func (m *Model) HandleKeyPressed(msg tea.KeyMsg) (Model, tea.Cmd) {
 	switch {
+	// Direction keys
 	case key.Matches(msg, m.keys.Up):
-		if m.game.Snake.Dir.IsOpposite(game.Up) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Up
+		return m.handleKeyUp()
 	case key.Matches(msg, m.keys.Right):
-		if m.game.Snake.Dir.IsOpposite(game.Right) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Right
+		return m.handleKeyRight()
 	case key.Matches(msg, m.keys.Down):
-		if m.game.Snake.Dir.IsOpposite(game.Down) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Down
+		return m.handleKeyDown()
 	case key.Matches(msg, m.keys.Left):
-		if m.game.Snake.Dir.IsOpposite(game.Left) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Left
-	// GAME ACTIONS
+		return m.handleKeyLeft()
+
+	// Game actions
 	case key.Matches(msg, m.keys.Quit):
-		return *m, tea.Quit
+		return m.handleQuit()
 	case key.Matches(msg, m.keys.Pause):
-		if m.game.State == game.Running {
-			m.game.State = game.Paused
-			m.msg = m.getActionButtonLabel()
-		}
-		return *m, nil
+		return m.handlePause()
 	case key.Matches(msg, m.keys.Restart):
-		switch m.game.State {
-		case game.Paused:
-			m.game.State = game.Running
-			m.msg = m.getActionButtonLabel()
-			return *m, m.tick(m.game.Snake.Speed)
-		case game.GameOver:
-			m.game.State = game.Running
-			m.msg = m.getActionButtonLabel()
-			return RestartModel(m.terminalWidth, m.terminalHeight), m.tick(m.game.Snake.Speed)
-		default:
-			log.Panic("Unreachable")
-		}
+		return m.handleRestart()
+
 	// Help Action
 	case key.Matches(msg, m.keys.Help):
-		m.help.ShowAll = !m.help.ShowAll
+		return m.handleHelp()
 	default:
 		return *m, nil
 	}
+}
 
+func (m *Model) handleKeyUp() (Model, tea.Cmd) {
+	if !m.game.Snake.Dir.IsOpposite(game.Up) {
+		m.nextSnakeMove = game.Up
+	}
+	return *m, nil
+}
+
+func (m *Model) handleKeyRight() (Model, tea.Cmd) {
+	if !m.game.Snake.Dir.IsOpposite(game.Right) {
+		m.nextSnakeMove = game.Right
+	}
+	return *m, nil
+}
+
+func (m *Model) handleKeyDown() (Model, tea.Cmd) {
+	if !m.game.Snake.Dir.IsOpposite(game.Down) {
+		m.nextSnakeMove = game.Down
+	}
+	return *m, nil
+}
+
+func (m *Model) handleKeyLeft() (Model, tea.Cmd) {
+	if !m.game.Snake.Dir.IsOpposite(game.Left) {
+		m.nextSnakeMove = game.Left
+	}
+	return *m, nil
+}
+
+func (m *Model) handleQuit() (Model, tea.Cmd) {
+	return *m, tea.Quit
+}
+
+func (m *Model) handlePause() (Model, tea.Cmd) {
+	if m.game.State == game.Running {
+		m.game.State = game.Paused
+		m.msg = m.getActionButtonLabel()
+	}
+	return *m, nil
+}
+
+func (m *Model) handleRestart() (Model, tea.Cmd) {
+	switch m.game.State {
+	case game.Paused:
+		m.game.State = game.Running
+		m.msg = m.getActionButtonLabel()
+		return *m, m.tick(m.game.Snake.Speed)
+	case game.GameOver:
+		m.game.State = game.Running
+		m.msg = m.getActionButtonLabel()
+		return RestartModel(m.terminalWidth, m.terminalHeight), m.tick(m.game.Snake.Speed)
+	default:
+		log.Panic("Unreachable")
+	}
+	return *m, nil
+}
+
+func (m *Model) handleHelp() (Model, tea.Cmd) {
+	m.help.ShowAll = !m.help.ShowAll
 	return *m, nil
 }
