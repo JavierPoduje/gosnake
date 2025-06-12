@@ -2,7 +2,6 @@ package game
 
 import (
 	"slices"
-	"strings"
 )
 
 func directions() [][]int {
@@ -15,10 +14,10 @@ func directions() [][]int {
 }
 
 type Snake struct {
-	Body         []Coord // head is at index 0
-	Dir          Direction
-	Speed        float64
-	addAfterMove bool
+	Body                []Coord // head is at index 0
+	Dir                 Direction
+	Speed               float64
+	increaseAfterMoving bool
 }
 
 func NewSnake() *Snake {
@@ -29,20 +28,19 @@ func NewSnake() *Snake {
 	}
 }
 
-func (s *Snake) Add() {
-	s.addAfterMove = true
+func (snake *Snake) Add() {
+	snake.increaseAfterMoving = true
 }
 
-func (s Snake) Head() Coord {
-	return s.Body[0]
+func (snake Snake) Head() Coord {
+	return snake.Body[0]
 }
 
-func (s *Snake) NextHead(direction Direction) Coord {
-	coordinate := directions()[direction]
-	head := s.Body[0]
+func (snake *Snake) NextHead(direction Direction) Coord {
+	offset := directions()[direction]
 	return Coord{
-		X: head.X + coordinate[0],
-		Y: head.Y + coordinate[1],
+		X: snake.Head().X + offset[0],
+		Y: snake.Head().Y + offset[1],
 	}
 }
 
@@ -60,28 +58,28 @@ func (snake *Snake) Move(direction Direction) error {
 		return nil
 	}
 
-	var prev Coord
+	var previousCoordinate Coord
 	offset := directions()[direction]
 
 	newBody := make([]Coord, len(snake.Body))
 	for i, snakeCoordinate := range snake.Body {
 		if i == 0 {
-			prev = snakeCoordinate
+			previousCoordinate = snakeCoordinate
 			newBody[i] = Coord{
 				snakeCoordinate.X + offset[0],
 				snakeCoordinate.Y + offset[1],
 			}
 		} else {
 			tempCoord := snakeCoordinate
-			newBody[i] = prev
-			prev = tempCoord
+			newBody[i] = previousCoordinate
+			previousCoordinate = tempCoord
 		}
 	}
 
-	if snake.addAfterMove {
-		newBody = append(newBody, prev)
+	if snake.increaseAfterMoving {
+		newBody = append(newBody, previousCoordinate)
 		snake.Speed *= SpeedIncreateRate
-		snake.addAfterMove = false
+		snake.increaseAfterMoving = false
 	}
 
 	snake.Body = newBody
@@ -94,10 +92,6 @@ func (snake *Snake) Contains(coordinate Coord) bool {
 	return slices.Contains(snake.Body, coordinate)
 }
 
-func (snake *Snake) BodyAsString() string {
-	body := strings.Builder{}
-	for _, coordinate := range snake.Body {
-		body.WriteString(coordinate.String())
-	}
-	return body.String()
+func (snake *Snake) IsHead(coordinate Coord) bool {
+	return snake.Head().Equals(coordinate)
 }

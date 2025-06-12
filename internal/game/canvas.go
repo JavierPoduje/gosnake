@@ -12,7 +12,7 @@ func NewCanvas(width, height int) *Canvas {
 	}
 }
 
-func (c *Canvas) InBounds(coord Coord) bool {
-	return coord.X >= 0 && coord.X < c.Width &&
-		coord.Y >= 0 && coord.Y < c.Height
+func (canvas *Canvas) InBounds(coord Coord) bool {
+	return coord.X >= 0 && coord.X < canvas.Width &&
+		coord.Y >= 0 && coord.Y < canvas.Height
 }

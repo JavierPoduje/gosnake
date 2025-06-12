@@ -1,5 +1,5 @@
 package game
 
-func (d Direction) String() string {
-	return [...]string{"Up", "Right", "Down", "Left"}[d]
+func (direction Direction) String() string {
+	return [...]string{"Up", "Right", "Down", "Left"}[direction]
 }

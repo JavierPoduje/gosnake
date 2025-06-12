@@ -6,10 +6,7 @@ import (
 	"testing"
 )
 
-type testContext struct {
-	//test    *func(t *testing.T, c *testContext)
-	//context int64
-}
+type testContext struct{}
 
 const DB_TEST_FILE = "scores_test.txt"
 
@@ -50,7 +47,7 @@ func TestDB_getRows(t *testing.T) {
 
 		file := db.getRows()
 
-		if 3 != len(file) {
+		if len(file) != 3 {
 			t.Errorf("Expected %v but got %v", 3, len(file))
 		}
 	}))
@@ -63,17 +60,17 @@ func TestDB_GetScores(t *testing.T) {
 
 		scores := db.GetScores()
 
-		if 3 != len(scores) {
+		if len(scores) != 3 {
 			t.Errorf("Expected %v but got %v", 3, len(scores))
 		}
 
-		if 10 != scores[0] {
+		if scores[0] != 10 {
 			t.Errorf("scores[0] should be %v; got %v", 10, scores[0])
 		}
-		if 9 != scores[1] {
+		if scores[1] != 9 {
 			t.Errorf("scores[1] should be %v; got %v", 9, scores[1])
 		}
-		if 6 != scores[2] {
+		if scores[2] != 6 {
 			t.Errorf("scores[2] should be %v; got %v", 6, scores[2])
 		}
 	}))
@@ -87,11 +84,11 @@ func TestDB_SaveScore(t *testing.T) {
 		db.SaveScore(5)
 		scores := db.GetScores()
 
-		if 4 != len(scores) {
+		if len(scores) != 4 {
 			t.Errorf("Expected %v but got %v", 4, len(scores))
 		}
 
-		if 5 != scores[3] {
+		if scores[3] != 5 {
 			t.Errorf("Expected %v but got %v", 5, scores[3])
 		}
 	}))
@@ -131,7 +128,7 @@ func TestDB_cleanScores(t *testing.T) {
 		db := NewDB()
 		db.file = DB_TEST_FILE
 
-		for i := 0; i < 10; i++ {
+		for range 10 {
 			db.SaveScore(1)
 		}
 		scores := db.GetScores()

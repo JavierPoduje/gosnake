@@ -52,10 +52,10 @@ func (db DB) SaveScore(score int) {
 		log.Fatalf("Error writing to file: %s", err)
 	}
 
-	db.cleanScores()
+	db.sanitizeScores()
 }
 
-func (db DB) cleanScores() {
+func (db DB) sanitizeScores() {
 	scores := db.GetScores()
 	sort.Ints(scores)
 
@@ -67,7 +67,7 @@ func (db DB) cleanScores() {
 		}
 	}
 
-	// write the cleaned scores to the file
+	// write the sanitized scores to the file
 	f, err := os.OpenFile(db.file, os.O_TRUNC|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatalf("Error opening file: %s", err)

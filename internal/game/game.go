@@ -17,22 +17,22 @@ type Game struct {
 
 func NewGame(width, height int) *Game {
 	return &Game{
-		Snake:    NewSnake(),
-		Canvas:   NewCanvas(width, height),
 		Apple:    &Coord{X: DefaultAppleX, Y: DefaultAppleY},
+		Canvas:   NewCanvas(width, height),
 		NextMove: Up,
+		Snake:    NewSnake(),
 		State:    Running,
 		Stats:    NewStats(),
 	}
 }
 
-func (game *Game) Tick(dir Direction) {
-	if !game.canSnakeMove(dir) {
+func (game *Game) Tick(direction Direction) {
+	if !game.nextMoveIsValid(direction) {
 		game.State = GameOver
 		return
 	}
 
-	game.NextMove = dir
+	game.NextMove = direction
 	err := game.Snake.Move(game.NextMove)
 	if err != nil {
 		log.Fatalf("Invalid m.NextMove: %v", err)
@@ -43,7 +43,7 @@ func (game *Game) Tick(dir Direction) {
 	}
 }
 
-func (game Game) canSnakeMove(dir Direction) bool {
+func (game Game) nextMoveIsValid(dir Direction) bool {
 	nextHead := game.Snake.NextHead(dir)
 	return game.Snake.IsValidMove(dir) && game.Canvas.InBounds(nextHead)
 }

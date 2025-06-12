@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/charmbracelet/bubbles/help"
-	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -35,10 +34,10 @@ const defaultSnakeSpeed = float64(3)
 type TickMsg time.Time
 
 type Model struct {
-	game   *game.Game
-	logger *logger.Logger
-	height int
-	width  int
+	game           *game.Game
+	logger         *logger.Logger
+	terminalHeight int
+	terminalWidth  int
 
 	db            db.DB
 	msg           string
@@ -59,23 +58,23 @@ func (m Model) tick(snakeSpeed float64) tea.Cmd {
 func NewModel() Model {
 	db := db.NewDB()
 	return Model{
-		msg:           "Initializing...",
-		game:          game.NewGame(CanvasWidth, CanvasHeight),
-		logger:        logger.NewLogger("debug.log"),
-		nextSnakeMove: defaultSnakeDir,
-		width:         DefaultTerminalWidth,
-		height:        DefaultTerminalHeight,
-		db:            db,
-		scores:        db.GetScores(),
-		help:          help.New(),
-		keys:          keys,
+		db:             db,
+		game:           game.NewGame(CanvasWidth, CanvasHeight),
+		help:           help.New(),
+		keys:           keys,
+		logger:         logger.NewLogger("debug.log"),
+		msg:            "Initializing...",
+		nextSnakeMove:  defaultSnakeDir,
+		scores:         db.GetScores(),
+		terminalHeight: DefaultTerminalHeight,
+		terminalWidth:  DefaultTerminalWidth,
 	}
 }
 
 func RestartModel(width, height int) Model {
 	m := NewModel()
-	m.width = width
-	m.height = height
+	m.terminalWidth = width
+	m.terminalHeight = height
 	return m
 }
 
@@ -97,32 +96,22 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m Model) View() string {
-	canvasContent := m.BuildNextCanvasContent()
+func (model Model) View() string {
+	canvasContent := model.BuildNextCanvasContent()
+	stats := model.BuildNextStatsContent()
 
-	stats := [][]string{
-		{"Eaten apples:", strconv.Itoa(m.game.Stats.EatenApples)},
-		{"Score:", m.game.Stats.RoundedScoreAsString()},
-	}
+	// components
+	canvas := ui.Canvas(CanvasWidth, CanvasHeight, model.game.State, canvasContent)
+	footer := ui.HelpContainer(model.help.View(model.keys))
+	historicScoresCard := ui.HistoricScoresCard(model.scores)
+	statsCard := ui.StatsCard(stats)
 
-	keysAsString := m.help.View(m.keys)
+	// build the content
+	infoCards := lipgloss.JoinVertical(lipgloss.Center, statsCard, historicScoresCard)
+	contentSection := lipgloss.JoinHorizontal(lipgloss.Top, canvas, infoCards)
+	content := lipgloss.JoinVertical(lipgloss.Right, contentSection, footer)
 
-	return ui.Layout(
-		m.width, m.height,
-		lipgloss.JoinVertical(
-			lipgloss.Right,
-			lipgloss.JoinHorizontal(
-				lipgloss.Top,
-				ui.Canvas(CanvasWidth, CanvasHeight, m.game.State, canvasContent),
-				lipgloss.JoinVertical(
-					lipgloss.Center,
-					ui.StatsCard(stats),
-					ui.HistoricScoresCard(m.scores),
-				),
-			),
-			ui.HelpContainer(keysAsString),
-		),
-	)
+	return ui.Layout(model.terminalWidth, model.terminalHeight, content)
 }
 
 // Update action button message by game state.
@@ -139,64 +128,6 @@ func (m Model) getActionButtonLabel() string {
 	}
 
 	return ""
-}
-
-func (m *Model) HandleWindowResize(msg tea.WindowSizeMsg) {
-	m.width, m.height = msg.Width, msg.Height
-}
-
-func (m *Model) HandleKeyPressed(msg tea.KeyMsg) (Model, tea.Cmd) {
-	switch {
-	case key.Matches(msg, m.keys.Up):
-		if m.game.Snake.Dir.IsOpposite(game.Up) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Up
-	case key.Matches(msg, m.keys.Right):
-		if m.game.Snake.Dir.IsOpposite(game.Right) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Right
-	case key.Matches(msg, m.keys.Down):
-		if m.game.Snake.Dir.IsOpposite(game.Down) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Down
-	case key.Matches(msg, m.keys.Left):
-		if m.game.Snake.Dir.IsOpposite(game.Left) {
-			return *m, nil
-		}
-		m.nextSnakeMove = game.Left
-	// GAME ACTIONS
-	case key.Matches(msg, m.keys.Quit):
-		return *m, tea.Quit
-	case key.Matches(msg, m.keys.Pause):
-		if m.game.State == game.Running {
-			m.game.State = game.Paused
-			m.msg = m.getActionButtonLabel()
-		}
-		return *m, nil
-	case key.Matches(msg, m.keys.Restart):
-		switch m.game.State {
-		case game.Paused:
-			m.game.State = game.Running
-			m.msg = m.getActionButtonLabel()
-			return *m, m.tick(m.game.Snake.Speed)
-		case game.GameOver:
-			m.game.State = game.Running
-			m.msg = m.getActionButtonLabel()
-			return RestartModel(m.width, m.height), m.tick(m.game.Snake.Speed)
-		default:
-			log.Panic("Unreachable")
-		}
-	// Help Action
-	case key.Matches(msg, m.keys.Help):
-		m.help.ShowAll = !m.help.ShowAll
-	default:
-		return *m, nil
-	}
-
-	return *m, nil
 }
 
 func (m *Model) HandleTick() (Model, tea.Cmd) {
@@ -220,6 +151,13 @@ func (m *Model) HandleTick() (Model, tea.Cmd) {
 	return *m, m.tick(m.game.Snake.Speed)
 }
 
+func (model Model) BuildNextStatsContent() [][]string {
+	return [][]string{
+		{"Eaten apples:", strconv.Itoa(model.game.Stats.EatenApples)},
+		{"Score:", model.game.Stats.RoundedScoreAsString()},
+	}
+}
+
 func (m Model) BuildNextCanvasContent() string {
 	strCanvas := strings.Builder{}
 
@@ -229,15 +167,17 @@ func (m Model) BuildNextCanvasContent() string {
 	snake := m.game.Snake
 	apple := m.game.Apple
 
-	for Y := 0; Y < width; Y++ {
-		for X := 0; X < height; X++ {
-			if snake.Contains(game.Coord{X: X, Y: Y}) {
-				if snake.Head().X == X && snake.Head().Y == Y {
+	for Y := range width {
+		for X := range height {
+			coordinate := game.Coord{X: X, Y: Y}
+
+			if snake.Contains(coordinate) {
+				if snake.IsHead(coordinate) {
 					strCanvas.WriteString(ui.SnakeHead(SnakeChar))
 				} else {
 					strCanvas.WriteString(ui.SnakeBody(SnakeChar))
 				}
-			} else if apple.X == X && apple.Y == Y {
+			} else if apple.Equals(coordinate) {
 				strCanvas.WriteString(ui.Apple(AppleChar))
 			} else {
 				strCanvas.WriteString(ui.NeutralChar(NeutralChar))
