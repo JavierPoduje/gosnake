@@ -13,7 +13,7 @@ func TestGame_CrushSnakeAgainstWall(t *testing.T) {
 	}
 	g.NextMove = Up
 
-	g.Tick(Up, nil)
+	g.Tick(Up)
 
 	if g.State != GameOver {
 		t.Errorf("Expected %v but got %v", GameOver, g.State)
@@ -30,7 +30,7 @@ func TestGame_SnakeHitsItSelf(t *testing.T) {
 	}
 	g.NextMove = Up
 
-	g.Tick(Up, nil)
+	g.Tick(Up)
 
 	if g.State != GameOver {
 		t.Errorf("Expected %v but got %v", GameOver, g.State)

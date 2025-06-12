@@ -9,6 +9,13 @@ const (
 	Left
 )
 
+func (d Direction) IsOpposite(other Direction) bool {
+	return (d == Up && other == Down) ||
+		(d == Down && other == Up) ||
+		(d == Left && other == Right) ||
+		(d == Right && other == Left)
+}
+
 const (
 	Running = iota
 	GameOver

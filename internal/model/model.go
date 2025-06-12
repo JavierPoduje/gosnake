@@ -148,22 +148,22 @@ func (m *Model) HandleWindowResize(msg tea.WindowSizeMsg) {
 func (m *Model) HandleKeyPressed(msg tea.KeyMsg) (Model, tea.Cmd) {
 	switch {
 	case key.Matches(msg, m.keys.Up):
-		if m.game.Snake.IsOppositeDir(game.Up) {
+		if m.game.Snake.Dir.IsOpposite(game.Up) {
 			return *m, nil
 		}
 		m.nextSnakeMove = game.Up
 	case key.Matches(msg, m.keys.Right):
-		if m.game.Snake.IsOppositeDir(game.Right) {
+		if m.game.Snake.Dir.IsOpposite(game.Right) {
 			return *m, nil
 		}
 		m.nextSnakeMove = game.Right
 	case key.Matches(msg, m.keys.Down):
-		if m.game.Snake.IsOppositeDir(game.Down) {
+		if m.game.Snake.Dir.IsOpposite(game.Down) {
 			return *m, nil
 		}
 		m.nextSnakeMove = game.Down
 	case key.Matches(msg, m.keys.Left):
-		if m.game.Snake.IsOppositeDir(game.Left) {
+		if m.game.Snake.Dir.IsOpposite(game.Left) {
 			return *m, nil
 		}
 		m.nextSnakeMove = game.Left
