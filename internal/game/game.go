@@ -26,31 +26,31 @@ func NewGame(width, height int) *Game {
 	}
 }
 
-func (g *Game) Tick(dir Direction) {
-	if !g.canSnakeMove(dir) {
-		g.State = GameOver
+func (game *Game) Tick(dir Direction) {
+	if !game.canSnakeMove(dir) {
+		game.State = GameOver
 		return
 	}
 
-	g.NextMove = dir
-	err := g.Snake.Move(g.NextMove)
+	game.NextMove = dir
+	err := game.Snake.Move(game.NextMove)
 	if err != nil {
 		log.Fatalf("Invalid m.NextMove: %v", err)
 	}
 
-	if g.Snake.Body[0] == *g.Apple {
-		g.eatApple()
+	if game.Snake.Body[0] == *game.Apple {
+		game.eatApple()
 	}
 }
 
-func (m Game) canSnakeMove(dir Direction) bool {
-	nextHead := m.Snake.NextHead(dir)
-	return m.Snake.IsValidMove(dir) && m.Canvas.InBounds(nextHead)
+func (game Game) canSnakeMove(dir Direction) bool {
+	nextHead := game.Snake.NextHead(dir)
+	return game.Snake.IsValidMove(dir) && game.Canvas.InBounds(nextHead)
 }
 
-func (g Game) getRandApple() *Coord {
-	width := g.Canvas.Width
-	height := g.Canvas.Height
+func (game Game) getRandApple() *Coord {
+	width := game.Canvas.Width
+	height := game.Canvas.Height
 
 	X := rand.IntN(width)
 	Y := rand.IntN(height)
@@ -58,13 +58,13 @@ func (g Game) getRandApple() *Coord {
 	return &Coord{X: X, Y: Y}
 }
 
-func (g *Game) eatApple() {
-	g.Snake.Add()
-	g.Stats.EatApple()
-	g.Stats.UpdateScore(g.Snake.Speed)
+func (game *Game) eatApple() {
+	game.Snake.Add()
+	game.Stats.EatApple()
+	game.Stats.UpdateScore(game.Snake.Speed)
 
-	g.Apple = g.getRandApple()
-	for g.Snake.Contains(*g.Apple) {
-		g.Apple = g.getRandApple()
+	game.Apple = game.getRandApple()
+	for game.Snake.Contains(*game.Apple) {
+		game.Apple = game.getRandApple()
 	}
 }

@@ -1,11 +1,11 @@
 package game
 
 import (
-	"errors"
+	"slices"
 	"strings"
 )
 
-func dirs() [][]int {
+func directions() [][]int {
 	return [][]int{
 		{0, -1}, // Up
 		{1, 0},  // Right
@@ -15,10 +15,10 @@ func dirs() [][]int {
 }
 
 type Snake struct {
-	Body  []Coord // head is at index 0
-	Dir   Direction
-	Speed float64
-	add   bool
+	Body         []Coord // head is at index 0
+	Dir          Direction
+	Speed        float64
+	addAfterMove bool
 }
 
 func NewSnake() *Snake {
@@ -30,79 +30,74 @@ func NewSnake() *Snake {
 }
 
 func (s *Snake) Add() {
-	s.add = true
+	s.addAfterMove = true
 }
 
 func (s Snake) Head() Coord {
 	return s.Body[0]
 }
 
-func (s *Snake) NextHead(dir Direction) Coord {
-	dirCoord := dirs()[dir]
+func (s *Snake) NextHead(direction Direction) Coord {
+	coordinate := directions()[direction]
 	head := s.Body[0]
 	return Coord{
-		X: head.X + dirCoord[0],
-		Y: head.Y + dirCoord[1],
+		X: head.X + coordinate[0],
+		Y: head.Y + coordinate[1],
 	}
 }
 
-func (s *Snake) IsValidMove(dir Direction) bool {
-	nextHead := s.NextHead(dir)
-	return !s.Contains(nextHead)
+func (snake *Snake) IsValidMove(direction Direction) bool {
+	nextHead := snake.NextHead(direction)
+	return !snake.Contains(nextHead)
 }
 
-func (s *Snake) Move(dir Direction) error {
-	if dir < 0 && dir >= 4 {
-		return errors.New("Invalid direction")
+func (snake *Snake) Move(direction Direction) error {
+	if direction < 0 && direction >= 4 {
+		panic("invalid direction")
 	}
 
-	if s.Dir.IsOpposite(dir) {
+	if snake.Dir.IsOpposite(direction) {
 		return nil
 	}
 
 	var prev Coord
-	dirCoord := dirs()[dir]
+	offset := directions()[direction]
 
-	newBody := make([]Coord, len(s.Body))
-	for i, coord := range s.Body {
+	newBody := make([]Coord, len(snake.Body))
+	for i, snakeCoordinate := range snake.Body {
 		if i == 0 {
-			prev = coord
+			prev = snakeCoordinate
 			newBody[i] = Coord{
-				coord.X + dirCoord[0],
-				coord.Y + dirCoord[1],
+				snakeCoordinate.X + offset[0],
+				snakeCoordinate.Y + offset[1],
 			}
 		} else {
-			tempCoord := coord
+			tempCoord := snakeCoordinate
 			newBody[i] = prev
 			prev = tempCoord
 		}
 	}
 
-	if s.add {
+	if snake.addAfterMove {
 		newBody = append(newBody, prev)
-		s.Speed *= SpeedIncreateRate
-		s.add = false
+		snake.Speed *= SpeedIncreateRate
+		snake.addAfterMove = false
 	}
 
-	s.Body = newBody
-	s.Dir = dir
+	snake.Body = newBody
+	snake.Dir = direction
 
 	return nil
 }
 
-func (s *Snake) Contains(c Coord) bool {
-	for _, coord := range s.Body {
-		if coord == c {
-			return true
-		}
-	}
-	return false
+func (snake *Snake) Contains(coordinate Coord) bool {
+	return slices.Contains(snake.Body, coordinate)
 }
 
-func (s *Snake) BodyAsString() string {
+func (snake *Snake) BodyAsString() string {
 	body := strings.Builder{}
-	for _, coord := range s.Body {
-		body.WriteString(coord.String())
+	for _, coordinate := range snake.Body {
+		body.WriteString(coordinate.String())
 	}
 	return body.String()
 }
